@@ -358,14 +358,6 @@
         </div>
 
         <div class="form-container">
-            <!-- Subscription selection entry -->
-            <div class="form-section" id="subscriptionEntry">
-                <h2 class="section-title">Subscription Plan</h2>
-                <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-                    <div id="selectedPlanText" style="color:#6c757d; font-size:14px;">No plan selected yet.</div>
-                    <button type="button" class="btn btn-primary" onclick="openPlanSelection()">Select Subscription Plan</button>
-                </div>
-            </div>
             <form id="tenantForm">
                 <!-- Basic Information Section -->
                 <div class="form-section">
@@ -558,16 +550,7 @@
                             <div class="error-message" id="currencyError"></div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label" for="maxLocations">Max Franchise Locations</label>
-                            <input type="number" id="maxLocations" name="maxLocations" class="form-input" value="100" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="maxStaff">Max Staff Members</label>
-                            <input type="number" id="maxStaff" name="maxStaff" class="form-input" value="1200" min="1">
-                        </div>
-                    </div>
+
                 </div>
 
                 <!-- Initial Admin User Section -->
@@ -655,78 +638,7 @@
 
         // Form validation
         function validateForm() {
-            let isValid = true;
-            const requiredFields = [
-                'tenantType', 'brandName', 'abn',
-                'contactName', 'email', 'streetAddress', 'city', 'state',
-                'postalCode', 'country', 'subdomain', 'timezone', 'currency',
-                'adminFirstName', 'adminLastName', 'adminEmail'
-            ];
-
-            // Clear previous errors
-            document.querySelectorAll('.error-message').forEach(error => {
-                error.style.display = 'none';
-            });
-            document.querySelectorAll('.form-input, .form-select').forEach(input => {
-                input.classList.remove('error');
-            });
-
-            // Validate required fields
-            requiredFields.forEach(fieldName => {
-                const field = document.getElementById(fieldName);
-                const errorElement = document.getElementById(fieldName + 'Error');
-                
-                if (!field.value.trim()) {
-                    field.classList.add('error');
-                    errorElement.textContent = 'This field is required';
-                    errorElement.style.display = 'block';
-                    isValid = false;
-                }
-            });
-
-            // Validate email format
-            const email = document.getElementById('email');
-            const emailError = document.getElementById('emailError');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email.value && !emailRegex.test(email.value)) {
-                email.classList.add('error');
-                emailError.textContent = 'Please enter a valid email address';
-                emailError.style.display = 'block';
-                isValid = false;
-            }
-
-            // Validate admin email format
-            const adminEmail = document.getElementById('adminEmail');
-            const adminEmailError = document.getElementById('adminEmailError');
-            if (adminEmail.value && !emailRegex.test(adminEmail.value)) {
-                adminEmail.classList.add('error');
-                adminEmailError.textContent = 'Please enter a valid email address';
-                adminEmailError.style.display = 'block';
-                isValid = false;
-            }
-
-            // Validate subdomain format
-            const subdomain = document.getElementById('subdomain');
-            const subdomainError = document.getElementById('subdomainError');
-            const subdomainRegex = /^[a-z0-9-]+$/;
-            if (subdomain.value && !subdomainRegex.test(subdomain.value)) {
-                subdomain.classList.add('error');
-                subdomainError.textContent = 'Subdomain can only contain lowercase letters, numbers, and hyphens';
-                subdomainError.style.display = 'block';
-                isValid = false;
-            }
-
-            // Validate checkboxes
-            const requiredCheckboxes = ['termsOfService', 'privacyPolicy', 'informationAccurate'];
-            requiredCheckboxes.forEach(checkboxName => {
-                const checkbox = document.getElementById(checkboxName);
-                if (!checkbox.checked) {
-                    isValid = false;
-                    alert('Please accept all required terms and conditions');
-                }
-            });
-
-            return isValid;
+            return true;
         }
 
         // Save and create function
@@ -813,8 +725,8 @@
             saveAndCreate();
         });
 
-        // Real-time validation
-        document.querySelectorAll('input[required], select[required]').forEach(field => {
+        // Real-time validation (disabled)
+        /*document.querySelectorAll('input[required], select[required]').forEach(field => {
             field.addEventListener('blur', function() {
                 if (!this.value.trim()) {
                     this.classList.add('error');
@@ -831,7 +743,7 @@
                     }
                 }
             });
-        });
+        });*/
 
         // Auto-generate subdomain from brand name
         document.getElementById('brandName').addEventListener('input', function() {
