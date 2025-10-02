@@ -525,11 +525,11 @@
         </div>
         
         <nav class="nav-menu">
-            <a href="#" class="nav-item">
+            <a href="Franchise_Home.html" class="nav-item">
                 <div class="nav-icon">🏠</div>
                 <span>Home</span>
             </a>
-            <a href="#" class="nav-item active">
+            <a href="index.html" class="nav-item active">
                 <div class="nav-icon">🏢</div>
                 <span>Tenant Management</span>
             </a>
@@ -894,7 +894,7 @@
 
         // New Tenant button
         document.querySelector('.header-actions .btn-secondary').addEventListener('click', function() {
-            window.location.href = 'franchisor_create_screen.html';
+            window.location.href = 'tenant_create_screen.html';
         });
 
         // Select All functionality
@@ -914,12 +914,14 @@
             });
         });
 
-        // Edit functionality
+        // Edit functionality → open edit screen with tenant type param
         document.querySelectorAll('.btn-edit').forEach(btn => {
             btn.addEventListener('click', function() {
                 const row = this.closest('tr');
-                const brandName = row.cells[1].querySelector('.brand-name').textContent;
-                alert(`Edit functionality for ${brandName} would open tenant edit form`);
+                // Type column index is 3, contains badge text 'Franchisor' or 'Single Store'
+                const typeText = row.cells[3].textContent.toLowerCase();
+                const typeParam = typeText.includes('franchisor') ? 'franchisor' : 'single_store';
+                window.location.href = `tenant_edit_screen.html?type=${typeParam}`;
             });
         });
 
