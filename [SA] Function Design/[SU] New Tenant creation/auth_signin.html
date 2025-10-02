@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+    <style>
+        *{box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f7fa;color:#333;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+        .card{background:#fff;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.08);padding:28px;max-width:420px;width:100%}
+        h1{font-size:22px;margin:0 0 6px;color:#2c3e50}
+        .sub{color:#6c757d;font-size:14px;margin-bottom:16px}
+        label{display:block;margin:10px 0 6px;font-weight:500;color:#495057}
+        input{width:100%;padding:12px;border:2px solid #e9ecef;border-radius:6px;font-size:14px}
+        .actions{margin-top:14px;display:flex;gap:10px}
+        .btn{flex:1;padding:10px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+        .btn-primary{background:#007bff;color:#fff}
+        .or{display:flex;align-items:center;margin:16px 0;color:#6c757d}
+        .or:before,.or:after{content:"";flex:1;height:1px;background:#e9ecef;margin:0 8px}
+        .sso{display:flex;gap:10px}
+        .sso .btn{display:flex;align-items:center;justify-content:center;gap:8px}
+        .google{background:#fff;color:#444;border:2px solid #e9ecef}
+        .microsoft{background:#2f2f2f;color:#fff}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Sign in</h1>
+        <div class="sub">Use your email or continue with Google/Microsoft.</div>
+        <form id="loginForm">
+            <label for="email">Email</label>
+            <input id="email" type="email" required>
+            <label for="password">Password</label>
+            <input id="password" type="password" required>
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </div>
+        </form>
+        <div class="or">or</div>
+        <div class="sso">
+            <button class="btn google" id="googleBtn">Continue with Google</button>
+            <button class="btn microsoft" id="microsoftBtn">Continue with Microsoft</button>
+        </div>
+    </div>
+
+    <script>
+        // Simulated redirect target after login (e.g., back to request form)
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect') || 'store_request_form.html';
+        const inviteId = params.get('inviteId');
+
+        document.getElementById('loginForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            // TODO: perform real auth
+            handlePostLogin();
+        });
+
+        document.getElementById('googleBtn').addEventListener('click', function(){
+            // Simulate SSO; in real app, redirect to provider auth URL and then back with token
+            handlePostLogin();
+        });
+        document.getElementById('microsoftBtn').addEventListener('click', function(){
+            handlePostLogin();
+        });
+
+        function handlePostLogin(){
+            // Set authentication flags
+            localStorage.setItem('userLoggedIn', 'true');
+            sessionStorage.setItem('authenticated', 'true');
+
+            // If staff with invite, send them to target franchisee; else show message and go back
+            if (redirect === 'staff_post_login.html') {
+                if (inviteId) {
+                    window.location.href = `staff_post_login.html?inviteId=${encodeURIComponent(inviteId)}`;
+                } else {
+                    alert('No invitation found. Please ask your administrator to invite you to a store or franchisee.');
+                    window.location.href = 'account_type_selection.html';
+                }
+                return;
+            }
+
+            // Handle direct onboarding redirects for new account creation
+            if (redirect === 'franchisor_onboarding.html') {
+                window.location.href = 'franchisor_onboarding.html';
+                return;
+            }
+
+            if (redirect === 'single_store_onboarding.html') {
+                window.location.href = 'single_store_onboarding.html';
+                return;
+            }
+
+            // Check for associated tenants and handle multi-tenant logic
+            checkUserTenants();
+        }
+
+        function checkUserTenants() {
+            // In real app, this would call API to get user's associated tenants
+            // For demo, simulate different scenarios
+
+            // Simulate API call to get user tenants
+            setTimeout(() => {
+                const userTenants = getUserTenants();
+
+                if (userTenants.length === 0) {
+                    // No tenants - this shouldn't happen for existing users, but handle gracefully
+                    alert('No associated accounts found. Please contact support.');
+                    window.location.href = 'account_type_selection.html';
+                } else if (userTenants.length === 1) {
+                    // Single tenant - auto login
+                    handleSingleTenantLogin(userTenants[0]);
+                } else {
+                    // Multiple tenants - show selection
+                    window.location.href = 'tenant_selection.html';
+                }
+            }, 1000);
+        }
+
+        function getUserTenants() {
+            // Mock data - in real app this would come from API based on authenticated user
+            // For demo purposes, we'll simulate different scenarios
+
+            const email = document.getElementById('email').value.toLowerCase();
+
+            // Simulate different users with different tenant counts
+            if (email.includes('multi')) {
+                // User with multiple tenants
+                return [
+                    { id: 'franchisor_001', name: 'BurgerMaster Franchisor', type: 'franchisor', role: 'Admin' },
+                    { id: 'franchisee_001', name: 'BurgerMaster Downtown', type: 'franchisee', role: 'Owner' },
+                    { id: 'store_001', name: 'QuickBites Express', type: 'single_store', role: 'Manager' }
+                ];
+            } else if (email.includes('franchisor')) {
+                // Franchisor only
+                return [
+                    { id: 'franchisor_001', name: 'BurgerMaster Franchisor', type: 'franchisor', role: 'Admin' }
+                ];
+            } else if (email.includes('franchisee')) {
+                // Franchisee only
+                return [
+                    { id: 'franchisee_001', name: 'BurgerMaster Downtown', type: 'franchisee', role: 'Owner' }
+                ];
+            } else if (email.includes('store')) {
+                // Single store only
+                return [
+                    { id: 'store_001', name: 'QuickBites Express', type: 'single_store', role: 'Manager' }
+                ];
+            } else if (email.includes('staff')) {
+                // Staff - redirect to staff login flow
+                window.location.href = `staff_post_login.html?email=${encodeURIComponent(email)}`;
+                return []; // This will be handled by redirect
+            } else {
+                // Default: single tenant for demo
+                return [
+                    { id: 'store_001', name: 'Demo Store', type: 'single_store', role: 'Manager' }
+                ];
+            }
+        }
+
+        function handleSingleTenantLogin(tenant) {
+            // Check if this is first login to this tenant
+            const isFirstLogin = checkFirstLoginToTenant(tenant.id);
+
+            if (isFirstLogin) {
+                // Redirect to appropriate onboarding
+                redirectToOnboarding(tenant);
+            } else {
+                // Redirect to main dashboard
+                redirectToDashboard(tenant);
+            }
+        }
+
+        function checkFirstLoginToTenant(tenantId) {
+            // In real app, check server-side if user has logged into this tenant before
+            // For demo, check localStorage or simulate
+            const loggedInTenants = JSON.parse(localStorage.getItem('loggedInTenants') || '[]');
+            const hasLoggedIn = loggedInTenants.includes(tenantId);
+
+            if (!hasLoggedIn) {
+                // Mark as logged in for future checks
+                loggedInTenants.push(tenantId);
+                localStorage.setItem('loggedInTenants', JSON.stringify(loggedInTenants));
+                return true; // First time
+            }
+
+            return false; // Not first time
+        }
+
+        function redirectToOnboarding(tenant) {
+            // Determine onboarding flow based on tenant type
+            switch(tenant.type) {
+                case 'franchisor':
+                    window.location.href = 'franchisor_onboarding.html';
+                    break;
+                case 'franchisee':
+                    window.location.href = 'franchisee_onboarding.html';
+                    break;
+                case 'single_store':
+                    window.location.href = 'single_store_onboarding.html';
+                    break;
+                default:
+                    redirectToDashboard(tenant); // fallback
+            }
+        }
+
+        function redirectToDashboard(tenant) {
+            // Redirect to appropriate dashboard based on tenant type
+            switch(tenant.type) {
+                case 'franchisor':
+                    window.location.href = '../[SU] Franchisor Management/franchisor_create_screen.html';
+                    break;
+                case 'franchisee':
+                    window.location.href = '../[SU] Franchisee/franchisee_create_screen.html';
+                    break;
+                case 'single_store':
+                    window.location.href = '../[SU] Franchisor Management/Tenant_managment_screen.html';
+                    break;
+                default:
+                    alert('Dashboard not available for this tenant type.');
+                    window.location.href = 'account_type_selection.html';
+            }
+        }
+    </script>
+</body>
+</html>
+
+

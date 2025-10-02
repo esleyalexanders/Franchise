@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Review</title>
+    <style>
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f7fa;color:#333;margin:0}
+        .container{max-width:1000px;margin:0 auto;padding:20px}
+        .header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.06);margin-bottom:16px}
+        .card{background:#fff;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.06);padding:16px;margin-bottom:12px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+        .row{display:flex;flex-direction:column;gap:4px}
+        .lbl{font-size:12px;color:#6c757d}
+        .val{font-weight:600}
+        .actions{display:flex;gap:10px}
+        .btn{padding:10px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+        .btn-outline{background:transparent;color:#6c757d;border:2px solid #6c757d}
+        .btn-primary{background:#007bff;color:#fff}
+        .btn-warning{background:#ffc107;color:#212529}
+        .modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center}
+        .modal .dialog{background:#fff;border-radius:8px;max-width:520px;width:100%;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.2)}
+        textarea{width:100%;min-height:120px;border:2px solid #e9ecef;border-radius:6px;padding:10px}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Request Review</h2>
+            <a class="btn btn-outline" href="../[SU] Franchisor Management/Tenant_managment_screen.html">Back to Tenant Management</a>
+        </div>
+
+        <div class="card" id="summary"></div>
+        <div class="card">
+            <div class="actions">
+                <button class="btn btn-primary" id="approveBtn">Approve</button>
+                <button class="btn btn-outline" id="reviewBtn">Reviewing</button>
+                <button class="btn btn-warning" id="requestUpdateBtn">Request Update</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="updateModal">
+        <div class="dialog">
+            <h3 style="margin-top:0">Request Update</h3>
+            <p class="lbl">Describe what needs to be updated. This will be emailed to the applicant.</p>
+            <textarea id="updateMessage" placeholder="Please provide your updated ABN and clarify your business type..."></textarea>
+            <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px;">
+                <button class="btn btn-outline" id="cancelModal">Cancel</button>
+                <button class="btn btn-primary" id="sendUpdate">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Request dataset aligned with store_request_form fields
+        const requests = [
+            {
+                reqId: 'R-20201', type: 'store', submittedAt: '2025-09-12', status: 'pending',
+                businessName: 'Green Leaf Store', abn: 'ABN-998877',
+                industry: 'retail', businessType: 'electronics',
+                contactName: 'Alice Nguyen', email: 'alice@greenleaf.com', phone: '+1 555 2000',
+                website: 'https://greenleaf.com', description: 'Eco-friendly electronics retailer.'
+            },
+            {
+                reqId: 'R-20202', type: 'franchisor', submittedAt: '2025-09-14', status: 'pending',
+                businessName: 'Sunrise Fitness', abn: 'ABN-112233',
+                industry: 'services', businessType: 'gym-fitness',
+                contactName: 'Bob Lee', email: 'bob@sunrisefit.com', phone: '+1 555 3000',
+                website: 'https://sunrisefit.com', description: 'Fitness franchisor expanding regionally.'
+            }
+        ];
+
+        const params = new URLSearchParams(window.location.search);
+        const reqId = params.get('reqId');
+        const req = requests.find(r => r.reqId === reqId) || requests[0];
+
+        function formatIndustry(code) {
+            const map = { 'food-beverage':'Food & Beverage','retail':'Retail','services':'Services','hospitality':'Hospitality','health-medical':'Health & Medical','home-garden':'Home & Garden' };
+            return map[code] || code;
+        }
+        function formatBusinessType(code) {
+            const all = {
+                'restaurant-fast-food':'Fast Food Restaurant','restaurant-casual':'Casual Dining Restaurant','restaurant-fine-dining':'Fine Dining Restaurant','cafe-coffee-shop':'Cafe & Coffee Shop','bar-pub':'Bar & Pub','bakery-patisserie':'Bakery & Patisserie','catering':'Catering Services',
+                'apparel-fashion':'Apparel & Fashion','grocery-supermarket':'Grocery & Supermarket','convenience-store':'Convenience Store','electronics':'Electronics Store','books-media':'Books & Media Store','toys-games':'Toys & Games Store','specialty-retail':'Specialty Retail Store',
+                'gym-fitness':'Gym & Fitness Center','yoga-studio':'Yoga Studio','spa-beauty':'Spa & Beauty Salon','education-tutoring':'Education & Tutoring','childcare':'Childcare Center','automotive-repair':'Automotive Repair Shop','car-wash':'Car Wash Service','accounting':'Accounting Services','consulting':'Consulting Services','real-estate':'Real Estate Agency',
+                'hotel-motel':'Hotel & Motel','travel-agency':'Travel Agency','bed-breakfast':'Bed & Breakfast','hostel':'Hostel','resort':'Resort',
+                'dental-clinic':'Dental Clinic','medical-clinic':'Medical Clinic','pharmacy':'Pharmacy','home-care':'Home Care Services','veterinary':'Veterinary Clinic','mental-health':'Mental Health Services',
+                'home-improvement':'Home Improvement & Repair','landscaping':'Landscaping Services','cleaning-services':'Cleaning Services','pest-control':'Pest Control Services','pool-maintenance':'Pool Maintenance','hvac-services':'HVAC Services'
+            };
+            return all[code] || code;
+        }
+
+        const summary = document.getElementById('summary');
+        summary.innerHTML = `
+            <div class="grid">
+                <div class="row"><div class="lbl">Request ID</div><div class="val">${req.reqId}</div></div>
+                <div class="row"><div class="lbl">Type</div><div class="val">${req.type === 'franchisor' ? 'Franchisor' : 'Store'}</div></div>
+                <div class="row"><div class="lbl">Submitted</div><div class="val">${req.submittedAt}</div></div>
+                <div class="row"><div class="lbl">Status</div><div class="val" id="statusVal">${req.status}</div></div>
+                <div class="row"><div class="lbl">Brand/Business Name</div><div class="val">${req.businessName || '-'}</div></div>
+                <div class="row"><div class="lbl">Business Registration (ABN)</div><div class="val">${req.abn || '-'}</div></div>
+                <div class="row"><div class="lbl">Industry</div><div class="val">${formatIndustry(req.industry)}</div></div>
+                <div class="row"><div class="lbl">Business Type</div><div class="val">${formatBusinessType(req.businessType)}</div></div>
+                <div class="row"><div class="lbl">Primary Contact</div><div class="val">${req.contactName || '-'} • ${req.email || '-'}</div></div>
+                <div class="row"><div class="lbl">Phone</div><div class="val">${req.phone || '-'}</div></div>
+                <div class="row"><div class="lbl">Website</div><div class="val">${req.website || '-'}</div></div>
+                <div class="row" style="grid-column:1/-1"><div class="lbl">Description</div><div class="val">${req.description || '-'}</div></div>
+            </div>
+        `;
+
+        document.getElementById('approveBtn').addEventListener('click', function(){
+            alert('Approved. Tenant will be created and activated.');
+            document.getElementById('statusVal').textContent = 'approved';
+        });
+        document.getElementById('reviewBtn').addEventListener('click', function(){
+            alert('Request moved to Reviewing.');
+            document.getElementById('statusVal').textContent = 'reviewing';
+        });
+        const modal = document.getElementById('updateModal');
+        document.getElementById('requestUpdateBtn').addEventListener('click', function(){ modal.style.display = 'flex'; });
+        document.getElementById('cancelModal').addEventListener('click', function(){ modal.style.display = 'none'; });
+        document.getElementById('sendUpdate').addEventListener('click', function(){
+            const msg = (document.getElementById('updateMessage').value || '').trim();
+            if (!msg) { alert('Please enter a message.'); return; }
+            alert('Update request sent to applicant.');
+            modal.style.display = 'none';
+            document.getElementById('statusVal').textContent = 'needs-update';
+        });
+    </script>
+</body>
+</html>
+
+

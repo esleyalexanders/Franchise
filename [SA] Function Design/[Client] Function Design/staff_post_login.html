@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Redirect</title>
+    <style>
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f7fa;color:#333;margin:0}
+        .card{background:#fff;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.08);padding:28px;max-width:520px;width:100%;text-align:center}
+        .btn{padding:10px 14px;border:none;border-radius:6px;background:#007bff;color:#fff;cursor:pointer}
+        .muted{color:#6c757d}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Checking your invitation…</h2>
+        <p class="muted" id="msg">Please wait.</p>
+        <button class="btn" id="go" style="display:none;">Continue</button>
+    </div>
+    <script>
+        // Simulate resolving invite to a franchisee/dashboard URL
+        const params = new URLSearchParams(window.location.search);
+        const inviteId = params.get('inviteId');
+        const msg = document.getElementById('msg');
+        const go = document.getElementById('go');
+        setTimeout(()=>{
+            if (inviteId) {
+                const target = '../[SU] Franchisee/franchisee_edit_screen.html';
+                msg.textContent = 'Invitation verified. Click continue to access your location.';
+                go.style.display = 'inline-block';
+                go.onclick = ()=> window.location.href = target;
+            } else {
+                msg.textContent = 'No valid invitation found. Please contact your administrator to invite you.';
+            }
+        }, 800);
+    </script>
+</body>
+</html>
+
+
+

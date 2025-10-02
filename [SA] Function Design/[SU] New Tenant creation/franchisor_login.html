@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchisor Sign in</title>
+    <style>
+        *{box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f7fa;color:#333;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
+        .card{background:#fff;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.08);padding:28px;max-width:420px;width:100%}
+        h1{font-size:22px;margin:0 0 6px;color:#2c3e50}
+        .sub{color:#6c757d;font-size:14px;margin-bottom:16px}
+        label{display:block;margin:10px 0 6px;font-weight:500;color:#495057}
+        input{width:100%;padding:12px;border:2px solid #e9ecef;border-radius:6px;font-size:14px}
+        .actions{margin-top:14px;display:flex;gap:10px}
+        .btn{flex:1;padding:10px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+        .btn-primary{background:#007bff;color:#fff}
+        .or{display:flex;align-items:center;margin:16px 0;color:#6c757d}
+        .or:before,.or:after{content:"";flex:1;height:1px;background:#e9ecef;margin:0 8px}
+        .sso{display:flex;gap:10px}
+        .sso .btn{display:flex;align-items:center;justify-content:center;gap:8px}
+        .google{background:#fff;color:#444;border:2px solid #e9ecef}
+        .microsoft{background:#2f2f2f;color:#fff}
+        .back-link{text-align:center;margin-top:16px}
+        .back-link a{color:#007bff;text-decoration:none;font-size:14px}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Franchisor Sign in</h1>
+        <div class="sub">Sign in to create and manage your franchise network.</div>
+        <form id="loginForm">
+            <label for="email">Email</label>
+            <input id="email" type="email" required>
+            <label for="password">Password</label>
+            <input id="password" type="password" required>
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+            </div>
+        </form>
+        <div class="or">or</div>
+        <div class="sso">
+            <button class="btn google" id="googleBtn">Continue with Google</button>
+            <button class="btn microsoft" id="microsoftBtn">Continue with Microsoft</button>
+        </div>
+        <div class="back-link">
+            <a href="account_type_selection.html">← Back to account type selection</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            handlePostLogin();
+        });
+
+        document.getElementById('googleBtn').addEventListener('click', function(){
+            handlePostLogin();
+        });
+        document.getElementById('microsoftBtn').addEventListener('click', function(){
+            handlePostLogin();
+        });
+
+        function handlePostLogin(){
+            // Set authentication flags
+            localStorage.setItem('userLoggedIn', 'true');
+            sessionStorage.setItem('authenticated', 'true');
+
+            // Redirect to franchisor create screen
+            window.location.href = '../Function%20Design/%5BSU%5D%20Franchisor%20Management/franchisor_create_screen.html';
+        }
+    </script>
+</body>
+</html>

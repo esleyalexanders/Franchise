@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Single Store Subscription Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .subtitle { color: #6c757d; margin-top: 8px; font-size: 16px; }
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .plan-card { background: white; border-radius: 12px; padding: 32px; border: 2px solid #e9ecef; cursor: pointer; transition: all .3s ease; position: relative; }
+        .plan-card:hover { border-color: #007bff; transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,123,255,0.15); }
+        .plan-card.selected { border-color: #007bff; background: #f8f9ff; }
+        .plan-card.recommended { border-color: #28a745; }
+        .plan-card.recommended::after { content: 'Most Popular'; position: absolute; top: -10px; right: 20px; background: #28a745; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .plan-name { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: #2c3e50; }
+        .plan-price { font-size: 36px; font-weight: 800; color: #007bff; margin-bottom: 8px; }
+        .plan-period { font-size: 16px; color: #6c757d; margin-bottom: 20px; }
+        .plan-features { list-style: none; margin-bottom: 24px; }
+        .plan-features li { padding: 6px 0; font-size: 14px; }
+        .plan-features li::before { content: '✓'; color: #28a745; font-weight: bold; margin-right: 8px; }
+        .actions { display: flex; gap: 16px; justify-content: center; }
+        .btn { padding: 14px 28px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all .2s ease; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-primary:hover { background: #0056b3; transform: translateY(-1px); }
+        .btn-outline { background: transparent; color: #6c757d; border: 2px solid #6c757d; }
+        .btn-outline:hover { background: #6c757d; color: white; }
+        .note { background: #e7f3ff; border-left: 4px solid #007bff; padding: 16px; border-radius: 4px; margin-top: 20px; font-size: 14px; color: #495057; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Choose Your Single Store Plan</h1>
+            <div class="subtitle">Select the plan that best fits your single store business needs</div>
+        </div>
+
+        <div class="plans-grid">
+            <div class="plan-card" data-plan="basic" onclick="selectPlan('basic')">
+                <div class="plan-name">Basic</div>
+                <div class="plan-price">$19</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li>Up to 5 staff members</li>
+                    <li>Basic reporting dashboard</li>
+                    <li>Email support</li>
+                    <li>Mobile app access</li>
+                    <li>Standard integrations</li>
+                </ul>
+            </div>
+
+            <div class="plan-card recommended" data-plan="standard" onclick="selectPlan('standard')">
+                <div class="plan-name">Standard</div>
+                <div class="plan-price">$39</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li>Up to 15 staff members</li>
+                    <li>Advanced analytics</li>
+                    <li>Priority support</li>
+                    <li>Custom branding</li>
+                    <li>All integrations</li>
+                    <li>API access</li>
+                </ul>
+            </div>
+
+            <div class="plan-card" data-plan="premium" onclick="selectPlan('premium')">
+                <div class="plan-name">Premium</div>
+                <div class="plan-price">$69</div>
+                <div class="plan-period">per month</div>
+                <ul class="plan-features">
+                    <li>Up to 50 staff members</li>
+                    <li>Advanced analytics</li>
+                    <li>Dedicated support</li>
+                    <li>White-label solution</li>
+                    <li>Advanced security</li>
+                    <li>Custom integrations</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="account_type_selection.html" class="btn btn-outline">← Back</a>
+            <button class="btn btn-primary" id="continueBtn" onclick="continueToPayment()" disabled>
+                Continue to Payment →
+            </button>
+        </div>
+
+        <div class="note">
+            <strong>Note:</strong> All plans include a 14-day free trial. You can cancel or change your plan at any time. Payment will be processed securely and you will receive email confirmation upon activation.
+        </div>
+    </div>
+
+    <script>
+        let selectedPlan = null;
+
+        function selectPlan(planId) {
+            // Remove selected class from all cards
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selected class to clicked card
+            const selectedCard = document.querySelector(`[data-plan="${planId}"]`);
+            selectedCard.classList.add('selected');
+
+            selectedPlan = planId;
+            document.getElementById('continueBtn').disabled = false;
+
+            // Store selected plan in session/localStorage for next step
+            localStorage.setItem('selectedPlan', planId);
+        }
+
+        function continueToPayment() {
+            if (!selectedPlan) {
+                alert('Please select a subscription plan first.');
+                return;
+            }
+
+            // Get account type from URL params or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const accountType = urlParams.get('type') || localStorage.getItem('accountType') || 'single_store';
+
+            // Redirect to payment form with plan and account type
+            window.location.href = `payment_form.html?plan=${selectedPlan}&type=${accountType}`;
+        }
+
+        // Pre-select plan if coming back from payment
+        const urlParams = new URLSearchParams(window.location.search);
+        const preSelectedPlan = urlParams.get('plan') || localStorage.getItem('selectedPlan');
+        if (preSelectedPlan) {
+            selectPlan(preSelectedPlan);
+        }
+    </script>
+</body>
+</html>
+
+

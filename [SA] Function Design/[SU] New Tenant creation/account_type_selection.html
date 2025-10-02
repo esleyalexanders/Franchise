@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Account Type</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.6; }
+        .container { max-width: 960px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 24px; }
+        .subtitle { color: #6c757d; margin-top: 8px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        .card { background: white; border-radius: 8px; padding: 24px; border: 2px solid #e9ecef; text-align: center; cursor: pointer; transition: all .2s ease; }
+        .card:hover { border-color: #007bff; box-shadow: 0 8px 20px rgba(0,123,255,0.12); transform: translateY(-2px); }
+        .icon { font-size: 40px; margin-bottom: 10px; }
+        h3 { font-size: 18px; margin-bottom: 8px; color: #2c3e50; }
+        p { font-size: 14px; color: #6c757d; }
+        a.card { text-decoration: none; color: inherit; display: block; }
+    </style>
+    <script>
+        function to(url) { window.location.href = url; }
+
+        function showFranchiseeMessage() {
+            alert('Franchisees cannot self-register. Please contact your franchisor to be invited to their network. They will create your account and send you an email invitation.');
+        }
+    </script>
+    </head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>How do you want to use the platform?</h1>
+            <div class="subtitle">Choose your role to get started.</div>
+        </div>
+        <div class="grid">
+            <a class="card" href="franchisor_login.html">
+                <div class="icon">🏢</div>
+                <h3>I’m a Franchisor</h3>
+                <p>Set up your franchisor account and choose your subscription plan.</p>
+            </a>
+            <a class="card" href="single_store_login.html">
+                <div class="icon">🏬</div>
+                <h3>I run a single store</h3>
+                <p>Set up your store account and choose your subscription plan.</p>
+            </a>
+            <a class="card" href="auth_signin.html?redirect=staff_post_login.html">
+                <div class="icon">🧑‍💼</div>
+                <h3>I’m Staff</h3>
+                <p>Join a store or franchisee via email invitation from your administrator.</p>
+            </a>
+            <a class="card" href="auth_signin.html?redirect=franchisee_post_login.html">
+                <div class="icon">🏪</div>
+                <h3>I’m a Franchisee</h3>
+                <p>Sign in to your franchisee account.</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+
+

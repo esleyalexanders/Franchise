@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Management - Super Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .logo {
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: #dc3545;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #007bff;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+            color: #007bff;
+        }
+
+        .nav-item.active {
+            background: #e7f3ff;
+            color: #007bff;
+            border-left-color: #007bff;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #6c757d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+        }
+
+        .btn-refresh {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-refresh:hover {
+            background: #0056b3;
+        }
+
+        .search-filter-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .data-table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 14px;
+        }
+
+        .table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #f1f3f4;
+            font-size: 14px;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .contact-line {
+            color: #495057;
+            font-size: 13px;
+        }
+
+        .max-accounts {
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-warning {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-closed {
+            background: #f5f5f5;
+            color: #757575;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tenant-icon {
+            font-size: 16px;
+        }
+
+        .na-text {
+            font-size: 12px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .location {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        .count-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .count-number {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .count-label {
+            color: #6c757d;
+            font-size: 11px;
+        }
+
+        .subscription-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .subscription-plan {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .subscription-status {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+
+        .subscription-status.active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .subscription-status.expired {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .subscription-status.pending {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .tenant-type-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .tenant-type-franchisor {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        .tenant-type-single {
+            background: #f3e5f5;
+            color: #7b1fa2;
+            border: 1px solid #e1bee7;
+        }
+
+        .activity-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .activity-time {
+            color: #495057;
+            font-size: 13px;
+        }
+
+        .activity-type {
+            color: #6c757d;
+            font-size: 11px;
+        }
+
+
+        .tenant-checkbox {
+            width: 16px;
+            height: 16px;
+        }
+
+        #selectAll {
+            width: 16px;
+            height: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit {
+            background: white;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-edit:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 20px;
+            }
+
+            .search-filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-actions {
+                justify-content: center;
+            }
+
+            .table {
+                font-size: 12px;
+            }
+
+            .table th,
+            .table td {
+                padding: 12px 8px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .header-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">◆</div>
+            <div class="logo-text">franchise-web</div>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="#" class="nav-item">
+                <div class="nav-icon">🏠</div>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <div class="nav-icon">🏢</div>
+                <span>Tenant Management</span>
+            </a>
+        </nav>
+        
+        <div class="user-profile">
+            <div class="user-avatar">HQ</div>
+            <div class="user-info">
+                <div class="user-name">Hoàng Nguyễn Quang</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Tenant Management</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary">
+                    <span>+</span> New Tenant
+                </button>
+                <button class="btn btn-refresh">
+                    <span>🔄</span> Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="search-filter-section">
+            <input type="text" class="search-input" placeholder="Search by name, subdomain, contact">
+            <div class="filter-actions">
+                <button class="btn btn-secondary">Reset</button>
+                <button class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+
+        <div class="data-table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Brand Name</th>
+                        <th>Contact</th>
+                        <th>Type</th>
+                        <th>Franchisees</th>
+                        <th>Staff</th>
+                        <th>System Status</th>
+                        <th>Subscription Plan</th>
+                        <th>Last Activity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox"></td>
+                        <td>
+                            <div class="brand-info">
+                                <div class="brand-name">
+                                    <span class="tenant-icon">🏢</span>
+                                    McDonald's Downtown
+                                </div>
+                                <div class="location">New York, NY</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-info">
+                                <div class="contact-line">John Smith</div>
+                                <div class="contact-line">john@mcdonalds.com</div>
+                                <div class="contact-line">+1 (555) 123-4567</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="tenant-type-badge tenant-type-franchisor">Franchisor</span>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number">12</span>
+                                <span class="count-label">Active</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number">45</span>
+                                <span class="count-label">Total</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-active">Active</span>
+                        </td>
+                        <td>
+                            <div class="subscription-info">
+                                <div class="subscription-plan">Premium</div>
+                                <div class="subscription-status">Active</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-info">
+                                <div class="activity-time">2 hours ago</div>
+                                <div class="activity-type">Login</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox"></td>
+                        <td>
+                            <div class="brand-info">
+                                <div class="brand-name">
+                                    <span class="tenant-icon">🏪</span>
+                                    Starbucks Central
+                                </div>
+                                <div class="location">Los Angeles, CA</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-info">
+                                <div class="contact-line">Sarah Johnson</div>
+                                <div class="contact-line">sarah@starbucks.com</div>
+                                <div class="contact-line">+1 (555) 987-6543</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="tenant-type-badge tenant-type-single">Single Store</span>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number na-text">--</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number">32</span>
+                                <span class="count-label">Total</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-warning">Suspended</span>
+                        </td>
+                        <td>
+                            <div class="subscription-info">
+                                <div class="subscription-plan">Standard</div>
+                                <div class="subscription-status">Active</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-info">
+                                <div class="activity-time">1 day ago</div>
+                                <div class="activity-type">Report</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox"></td>
+                        <td>
+                            <div class="brand-info">
+                                <div class="brand-name">
+                                    <span class="tenant-icon">🏢</span>
+                                    Subway Express
+                                </div>
+                                <div class="location">Chicago, IL</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-info">
+                                <div class="contact-line">Mike Davis</div>
+                                <div class="contact-line">mike@subway.com</div>
+                                <div class="contact-line">+1 (555) 456-7890</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="tenant-type-badge tenant-type-franchisor">Franchisor</span>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number">15</span>
+                                <span class="count-label">Active</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number">28</span>
+                                <span class="count-label">Total</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-active">Active</span>
+                        </td>
+                        <td>
+                            <div class="subscription-info">
+                                <div class="subscription-plan">Basic</div>
+                                <div class="subscription-status">Active</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-info">
+                                <div class="activity-time">30 min ago</div>
+                                <div class="activity-type">Transaction</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox"></td>
+                        <td>
+                            <div class="brand-info">
+                                <div class="brand-name">
+                                    <span class="tenant-icon">🏪</span>
+                                    Pizza Hut Plaza
+                                </div>
+                                <div class="location">Miami, FL</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-info">
+                                <div class="contact-line">Lisa Wilson</div>
+                                <div class="contact-line">lisa@pizzahut.com</div>
+                                <div class="contact-line">+1 (555) 321-0987</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="tenant-type-badge tenant-type-single">Single Store</span>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number na-text">--</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number">18</span>
+                                <span class="count-label">Total</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-inactive">Inactive</span>
+                        </td>
+                        <td>
+                            <div class="subscription-info">
+                                <div class="subscription-plan">Standard</div>
+                                <div class="subscription-status">Expired</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-info">
+                                <div class="activity-time">3 days ago</div>
+                                <div class="activity-type">Login</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox"></td>
+                        <td>
+                            <div class="brand-info">
+                                <div class="brand-name">
+                                    <span class="tenant-icon">🏪</span>
+                                    Burger King Express
+                                </div>
+                                <div class="location">Phoenix, AZ</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-info">
+                                <div class="contact-line">Robert Brown</div>
+                                <div class="contact-line">robert@burgerking.com</div>
+                                <div class="contact-line">+1 (555) 654-3210</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="tenant-type-badge tenant-type-single">Single Store</span>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number na-text">--</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="count-info">
+                                <span class="count-number">8</span>
+                                <span class="count-label">Total</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-closed">Closed</span>
+                        </td>
+                        <td>
+                            <div class="subscription-info">
+                                <div class="subscription-plan">Basic</div>
+                                <div class="subscription-status">Expired</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-info">
+                                <div class="activity-time">1 week ago</div>
+                                <div class="activity-type">Login</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit">Edit</button>
+                                <button class="btn btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.table tbody tr');
+            
+            rows.forEach(row => {
+                const brandName = row.cells[1].textContent.toLowerCase();
+                const contact = row.cells[2].textContent.toLowerCase();
+                const location = row.cells[1].querySelector('.location')?.textContent.toLowerCase() || '';
+                const isVisible = brandName.includes(searchTerm) || contact.includes(searchTerm) || location.includes(searchTerm);
+                row.style.display = isVisible ? '' : 'none';
+            });
+        });
+
+        // Reset search
+        document.querySelector('.filter-actions .btn-secondary').addEventListener('click', function() {
+            document.querySelector('.search-input').value = '';
+            document.querySelectorAll('.table tbody tr').forEach(row => {
+                row.style.display = '';
+            });
+        });
+
+        // Refresh functionality
+        document.querySelector('.btn-refresh').addEventListener('click', function() {
+            this.innerHTML = '<span>⏳</span> Refreshing...';
+            setTimeout(() => {
+                this.innerHTML = '<span>🔄</span> Refresh';
+                // Simulate data refresh
+                updateDataRefresh();
+            }, 1000);
+        });
+
+        // New Tenant button
+        document.querySelector('.header-actions .btn-secondary').addEventListener('click', function() {
+            window.location.href = 'franchisor_create_screen.html';
+        });
+
+        // Select All functionality
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.tenant-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateBulkActions();
+        });
+
+        // Individual checkbox functionality
+        document.querySelectorAll('.tenant-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateBulkActions();
+                updateSelectAllState();
+            });
+        });
+
+        // Edit functionality
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const brandName = row.cells[1].querySelector('.brand-name').textContent;
+                alert(`Edit functionality for ${brandName} would open tenant edit form`);
+            });
+        });
+
+        // Delete functionality
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const brandName = row.cells[1].querySelector('.brand-name').textContent;
+                if (confirm(`Are you sure you want to delete ${brandName}?`)) {
+                    row.remove();
+                }
+            });
+        });
+
+        // Update bulk actions visibility
+        function updateBulkActions() {
+            const selectedCount = document.querySelectorAll('.tenant-checkbox:checked').length;
+            // You could show/hide bulk action buttons here
+            console.log(`${selectedCount} tenants selected`);
+        }
+
+        // Update select all checkbox state
+        function updateSelectAllState() {
+            const totalCheckboxes = document.querySelectorAll('.tenant-checkbox').length;
+            const checkedCheckboxes = document.querySelectorAll('.tenant-checkbox:checked').length;
+            const selectAllCheckbox = document.getElementById('selectAll');
+            
+            if (checkedCheckboxes === 0) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = false;
+            } else if (checkedCheckboxes === totalCheckboxes) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = true;
+            } else {
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+
+        // Simulate data refresh
+        function updateDataRefresh() {
+            // Simulate updating last activity times
+            document.querySelectorAll('.activity-time').forEach(time => {
+                const variations = ['30 min ago', '1 hour ago', '2 hours ago', '1 day ago', '2 days ago'];
+                time.textContent = variations[Math.floor(Math.random() * variations.length)];
+            });
+        }
+
+        // Mobile sidebar toggle
+        if (window.innerWidth <= 576) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleBtn = document.createElement('button');
+            toggleBtn.innerHTML = '☰';
+            toggleBtn.style.cssText = 'position: fixed; top: 20px; left: 20px; z-index: 1001; background: #007bff; color: white; border: none; padding: 10px; border-radius: 4px;';
+            document.body.appendChild(toggleBtn);
+            
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+            });
+        }
+
+        // Initialize on load
+        console.log('Tenant Management screen loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchisee Dashboard</title>
+    <style>
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f5f7fa;color:#333;margin:0}
+        .card{background:#fff;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,.08);padding:28px;max-width:520px;width:100%;text-align:center}
+        .btn{padding:10px 14px;border:none;border-radius:6px;background:#007bff;color:#fff;cursor:pointer;margin:10px}
+        .muted{color:#6c757d}
+        .success{color:#28a745}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Welcome to your Franchisee Dashboard</h2>
+        <p class="muted" id="msg">Loading your account information...</p>
+        <div id="actions" style="display:none;">
+            <button class="btn" onclick="goToDashboard()">Go to Dashboard</button>
+            <button class="btn" onclick="goToProfile()">Edit Profile</button>
+            <button class="btn" onclick="goToOnboarding()">Complete Setup</button>
+        </div>
+    </div>
+    <script>
+        // Simulate loading franchisee account and determining next steps
+        const params = new URLSearchParams(window.location.search);
+        const msg = document.getElementById('msg');
+        const actions = document.getElementById('actions');
+
+        // Check if user has completed onboarding
+        const hasCompletedOnboarding = localStorage.getItem('franchiseeOnboardingCompleted') === 'true';
+        const userEmail = localStorage.getItem('userEmail');
+
+        setTimeout(()=>{
+            if (userEmail) {
+                msg.innerHTML = `<span class="success">✓ Successfully signed in as ${userEmail}</span>`;
+                actions.style.display = 'block';
+
+                // Store login info
+                localStorage.setItem('userRole', 'franchisee');
+                localStorage.setItem('lastLogin', new Date().toISOString());
+            } else {
+                msg.textContent = 'Login verification failed. Please try signing in again.';
+                setTimeout(() => {
+                    window.location.href = 'auth_signin.html?redirect=franchisee_post_login.html';
+                }, 2000);
+            }
+        }, 800);
+
+        function goToDashboard() {
+            // Redirect to franchisee dashboard
+            window.location.href = '../[SU] Franchisee/franchisee_edit_screen.html';
+        }
+
+        function goToProfile() {
+            // Redirect to profile editing
+            window.location.href = '../[SU] Franchisee/franchisee_edit_screen.html?tab=profile';
+        }
+
+        function goToOnboarding() {
+            // Redirect to onboarding if not completed
+            window.location.href = 'franchisee_onboarding.html';
+        }
+    </script>
+</body>
+</html>
+
+

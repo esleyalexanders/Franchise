@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Management - Super Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: #2c3e50; font-size: 24px; }
+        .toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 10px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-primary:hover { background: #0056b3; transform: translateY(-1px); }
+        .btn-outline { background: transparent; color: #6c757d; border: 2px solid #6c757d; }
+        .btn-outline:hover { background: #6c757d; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-warning:hover { background: #e0a800; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
+        .cards { display: flex; flex-direction: column; gap: 12px; }
+        .franchisor-card { border: 1px solid #e9ecef; border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: all 0.3s ease; }
+        .franchisor-card:hover { border-color: #007bff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .franchisor-header { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .franchisor-title { display: flex; align-items: center; gap: 10px; }
+        .dropdown-icon { transition: transform 0.2s ease; font-size: 12px; }
+        .dropdown-icon.expanded { transform: rotate(90deg); }
+        .franchisee-list { margin-left: 24px; display: none; }
+        .franchisee-card { border: 1px dashed #e9ecef; border-radius: 8px; padding: 12px; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease; }
+        .franchisee-card:hover { border-color: #28a745; background: #f8fff9; }
+        .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        label { font-weight: 500; margin-bottom: 6px; display: block; color: #495057; }
+        input[type="text"], select { width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 4px; font-size: 14px; }
+        input:focus, select:focus { outline: none; border-color: #007bff; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e9ecef; }
+        th { background: #f8f9fa; cursor: pointer; user-select: none; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+        .badge.active { background: #d4edda; color: #155724; }
+        .badge.draft { background: #fff3cd; color: #856404; }
+        .badge.review { background: #cce5ff; color: #004085; }
+        .badge.suspended { background: #f8d7da; color: #721c24; }
+        .badge.closed { background: #e2e3e5; color: #383d41; }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .muted { color: #6c757d; font-size: 12px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+        .tab { padding: 8px 12px; border: 1px solid #e9ecef; border-radius: 6px; background: #f8f9fa; cursor: pointer; transition: all 0.3s ease; }
+        .tab.active { background: #e9efff; border-color: #cfe2ff; color: #0a58ca; }
+        .tab:hover { background: #f0f2f5; }
+        .draft-card { border: 1px dashed #c7d3ff; background: #f6f9ff; border-radius: 8px; padding: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .muted-sm { color: #6c757d; font-size: 12px; }
+        .status-indicator { display: inline-flex; align-items: center; gap: 4px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.active { background: #28a745; }
+        .status-dot.draft { background: #ffc107; }
+        .status-dot.review { background: #007bff; }
+        .status-dot.suspended { background: #dc3545; }
+        .status-dot.closed { background: #6c757d; }
+        .quick-actions { display: flex; gap: 8px; margin-top: 8px; }
+        .bulk-actions { background: #f8f9fa; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .bulk-actions h3 { color: #2c3e50; margin-bottom: 12px; }
+        .bulk-actions .actions { justify-content: flex-start; }
+        .alert { padding: 12px; border-radius: 4px; margin-bottom: 16px; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+
+        .modal-body {
+            padding: 30px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .audit-entry {
+            padding: 12px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .audit-entry:last-child {
+            border-bottom: none;
+        }
+
+        .audit-timestamp {
+            color: #6c757d;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .audit-action {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+
+        .audit-details {
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .audit-user {
+            color: #007bff;
+            font-weight: 500;
+        }
+
+        /* Bulk Import Modal Styles */
+        .bulk-import-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .bulk-import-section h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8f9ff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-area:hover,
+        .file-upload-area.dragover {
+            border-color: #0056b3;
+            background: #e7f3ff;
+        }
+
+        .file-upload-area.dragover {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .file-upload-icon {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .file-upload-text {
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .file-upload-hint {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .file-info {
+            background: #e9ecef;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-info.show {
+            display: flex;
+        }
+
+        .file-name {
+            flex: 1;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .file-size {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .file-remove {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        .file-remove:hover {
+            color: #c82333;
+        }
+
+        .import-progress {
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        .import-progress.show {
+            display: block;
+        }
+
+        .progress-bar-import {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill-import {
+            height: 100%;
+            background: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        .bulk-import-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+        @media (max-width: 768px) {
+            .filters { grid-template-columns: 1fr; }
+            .toolbar { flex-direction: column; gap: 8px; }
+            .actions { flex-direction: column; align-items: stretch; }
+            .franchisor-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .modal-header, .modal-body {
+                padding: 20px;
+            }
+
+            .bulk-import-actions {
+                flex-direction: column;
+            }
+
+            .file-upload-area {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Tenant Management</h1>
+            <div class="toolbar">
+                <a class="btn btn-primary" href="franchisor_create_screen.html">
+                    <span>+</span> New Tenant
+                </a>
+                <button class="btn btn-outline" id="bulkImportBtn">
+                    <span>📤</span> Bulk Import
+                </button>
+                <button class="btn btn-outline" id="bulkUpdateBtn">
+                    <span>🔄</span> Bulk Update
+                </button>
+                <button class="btn btn-outline" id="refreshBtn">
+                    <span>🔄</span> Refresh
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Bulk Actions Panel -->
+        <div class="bulk-actions" id="bulkActionsPanel" style="display:none;">
+            <h3>Bulk Operations</h3>
+            <div class="actions">
+                <button class="btn btn-success" id="approveSelected">Approve Selected</button>
+                <button class="btn btn-warning" id="suspendSelected">Suspend Selected</button>
+                <button class="btn btn-danger" id="closeSelected">Close Selected</button>
+                <button class="btn btn-outline" id="exportSelected">Export Selected</button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card" id="tabsCard">
+            <div class="tabs">
+                <button class="tab active" id="tabAll">All Tenants</button>
+                <button class="tab" id="tabActive">Active Tenants</button>
+                <button class="tab" id="tabReview">In Review</button>
+                <button class="tab" id="tabSuspended">Suspended</button>
+                <button class="tab" id="tabProcessing">Processing</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card" id="filtersCard">
+            <div class="filters">
+                <div>
+                    <label for="keyword">Search</label>
+                    <input type="text" id="keyword" placeholder="Search by name, subdomain, contact...">
+                </div>
+                <div>
+                    <label for="scope">Search Scope</label>
+                    <select id="scope">
+                        <option value="all">All Tenants</option>
+                        <option value="franchisor">Franchisors only</option>
+                        <option value="franchisee">Franchisees only</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="industry">Industry</label>
+                    <select id="industry">
+                        <option value="">All Industries</option>
+                        <option value="food-beverage">Food & Beverage</option>
+                        <option value="retail">Retail</option>
+                        <option value="services">Services</option>
+                        <option value="hospitality">Hospitality</option>
+                        <option value="health-medical">Health & Medical</option>
+                        <option value="home-garden">Home & Garden</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="businessType">Business Type</label>
+                    <select id="businessType" disabled>
+                        <option value="">All Business Types</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="plan">Plan</label>
+                    <select id="plan">
+                        <option value="">All Plans</option>
+                        <option value="basic">Basic</option>
+                        <option value="professional">Professional</option>
+                        <option value="enterprise">Enterprise</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="draft">Draft</option>
+                        <option value="review">In Review</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="card" id="resultsCard">
+            <div class="cards" id="resultsCards"></div>
+            <div class="muted" id="emptyState" style="display:none; padding: 12px;">No results found.</div>
+        </div>
+
+        <!-- Processing Tab Content -->
+        <div class="card" id="processingCard" style="display:none;">
+            <div class="cards" id="draftCards"></div>
+            <div class="muted" id="emptyProcessing" style="display:none; padding: 12px;">No drafts in processing.</div>
+        </div>
+
+        <!-- Audit Log Modal -->
+        <div id="auditLogModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Audit Log</h2>
+                    <button class="modal-close" id="auditLogModalClose">&times;</button>
+                </div>
+                <div class="modal-body" id="auditLogContent">
+                    <!-- Audit log entries will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Import Modal -->
+        <div id="bulkImportModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Bulk Import Tenants</h2>
+                    <button class="modal-close" id="bulkImportModalClose">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="bulk-import-section">
+                        <h4>📋 Step 1: Download Template</h4>
+                        <p style="color: #6c757d; margin-bottom: 15px; font-size: 14px;">
+                            Download the CSV template to ensure your data is formatted correctly for import.
+                        </p>
+                        <button class="btn btn-primary" id="downloadTemplateBtn">
+                            <span>📥</span> Download Template
+                        </button>
+                    </div>
+
+                    <div class="bulk-import-section">
+                        <h4>📤 Step 2: Upload Your Data</h4>
+                        <p style="color: #6c757d; margin-bottom: 15px; font-size: 14px;">
+                            Select your completed CSV file containing tenant data to import.
+                        </p>
+
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <div class="file-upload-icon">📎</div>
+                            <div class="file-upload-text">Click to select file or drag and drop</div>
+                            <div class="file-upload-hint">CSV files only (max 10MB)</div>
+                            <input type="file" id="fileInput" accept=".csv" style="display: none;">
+                        </div>
+
+                        <div class="file-info" id="fileInfo">
+                            <span class="file-name" id="fileName"></span>
+                            <span class="file-size" id="fileSize"></span>
+                            <button class="file-remove" id="fileRemove">&times;</button>
+                        </div>
+
+                        <div class="import-progress" id="importProgress">
+                            <div class="progress-bar-import">
+                                <div class="progress-fill-import" id="progressFillImport"></div>
+                            </div>
+                            <div class="progress-text" id="progressText">Validating data...</div>
+                        </div>
+
+                        <div class="bulk-import-actions">
+                            <button class="btn btn-outline" id="cancelImportBtn">Cancel</button>
+                            <button class="btn btn-primary" id="startImportBtn" disabled>
+                                <span>🚀</span> Start Import
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data with enhanced status information
+        const tenants = [
+            {
+                id: 1,
+                name: 'Acme Burgers',
+                subdomain: 'acme',
+                industry: 'food-beverage',
+                businessType: 'restaurant-fast-food',
+                plan: 'professional',
+                status: 'active',
+                contact: 'jane@acmeburgers.com',
+                created: '2024-01-15',
+                lastActivity: '2024-09-19',
+                franchisees: [
+                    { id: 101, name: 'Acme Burgers - Downtown', status: 'active' },
+                    { id: 102, name: 'Acme Burgers - Riverside', status: 'active' }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Bright Retail',
+                subdomain: 'bright',
+                industry: 'retail',
+                businessType: 'electronics',
+                plan: 'enterprise',
+                status: 'review',
+                contact: 'manager@brightretail.com',
+                created: '2024-02-20',
+                lastActivity: '2024-09-18',
+                franchisees: []
+            },
+            {
+                id: 3,
+                name: 'Care Services Co',
+                subdomain: 'care',
+                industry: 'services',
+                businessType: 'childcare',
+                plan: 'basic',
+                status: 'suspended',
+                contact: 'admin@careservices.com',
+                created: '2024-03-10',
+                lastActivity: '2024-09-17',
+                franchisees: [
+                    { id: 201, name: 'Care Services - North', status: 'active' }
+                ]
+            },
+            {
+                id: 4,
+                name: 'Fresh Foods Market',
+                subdomain: 'fresh',
+                industry: 'food-beverage',
+                businessType: 'restaurant-casual',
+                plan: 'professional',
+                status: 'draft',
+                contact: 'owner@freshfoods.com',
+                created: '2024-09-15',
+                lastActivity: '2024-09-19',
+                franchisees: []
+            }
+        ];
+
+        // Business types mapping
+        const businessTypes = {
+            'food-beverage': [
+                { value: 'restaurant-fast-food', text: 'Fast Food Restaurant' },
+                { value: 'restaurant-casual', text: 'Casual Dining Restaurant' },
+                { value: 'restaurant-fine-dining', text: 'Fine Dining Restaurant' },
+                { value: 'cafe-coffee-shop', text: 'Cafe & Coffee Shop' },
+                { value: 'bar-pub', text: 'Bar & Pub' },
+                { value: 'bakery-patisserie', text: 'Bakery & Patisserie' },
+                { value: 'catering', text: 'Catering Services' }
+            ],
+            'retail': [
+                { value: 'electronics', text: 'Electronics Store' },
+                { value: 'books-media', text: 'Books & Media Store' },
+                { value: 'toys-games', text: 'Toys & Games Store' },
+                { value: 'apparel-fashion', text: 'Apparel & Fashion' },
+                { value: 'grocery-supermarket', text: 'Grocery & Supermarket' },
+                { value: 'convenience-store', text: 'Convenience Store' },
+                { value: 'specialty-retail', text: 'Specialty Retail Store' }
+            ],
+            'services': [
+                { value: 'childcare', text: 'Childcare Center' },
+                { value: 'gym-fitness', text: 'Gym & Fitness Center' },
+                { value: 'yoga-studio', text: 'Yoga Studio' },
+                { value: 'spa-beauty', text: 'Spa & Beauty Salon' },
+                { value: 'education-tutoring', text: 'Education & Tutoring' },
+                { value: 'automotive-repair', text: 'Automotive Repair Shop' },
+                { value: 'car-wash', text: 'Car Wash Service' },
+                { value: 'accounting', text: 'Accounting Services' },
+                { value: 'consulting', text: 'Consulting Services' },
+                { value: 'real-estate', text: 'Real Estate Agency' }
+            ],
+            'hospitality': [
+                { value: 'hotel-motel', text: 'Hotel & Motel' },
+                { value: 'travel-agency', text: 'Travel Agency' },
+                { value: 'bed-breakfast', text: 'Bed & Breakfast' },
+                { value: 'hostel', text: 'Hostel' },
+                { value: 'resort', text: 'Resort' }
+            ],
+            'health-medical': [
+                { value: 'dental-clinic', text: 'Dental Clinic' },
+                { value: 'medical-clinic', text: 'Medical Clinic' },
+                { value: 'pharmacy', text: 'Pharmacy' },
+                { value: 'home-care', text: 'Home Care Services' },
+                { value: 'veterinary', text: 'Veterinary Clinic' },
+                { value: 'mental-health', text: 'Mental Health Services' }
+            ],
+            'home-garden': [
+                { value: 'home-improvement', text: 'Home Improvement & Repair' },
+                { value: 'landscaping', text: 'Landscaping Services' },
+                { value: 'cleaning-services', text: 'Cleaning Services' },
+                { value: 'pest-control', text: 'Pest Control Services' },
+                { value: 'pool-maintenance', text: 'Pool Maintenance' },
+                { value: 'hvac-services', text: 'HVAC Services' }
+            ]
+        };
+
+        // DOM elements
+        const els = {
+            keyword: document.getElementById('keyword'),
+            industry: document.getElementById('industry'),
+            businessType: document.getElementById('businessType'),
+            plan: document.getElementById('plan'),
+            status: document.getElementById('status'),
+            scope: document.getElementById('scope'),
+            cards: document.getElementById('resultsCards'),
+            empty: document.getElementById('emptyState'),
+            refresh: document.getElementById('refreshBtn'),
+            tabAll: document.getElementById('tabAll'),
+            tabActive: document.getElementById('tabActive'),
+            tabReview: document.getElementById('tabReview'),
+            tabSuspended: document.getElementById('tabSuspended'),
+            tabProcessing: document.getElementById('tabProcessing'),
+            processingCard: document.getElementById('processingCard'),
+            resultsCard: document.getElementById('resultsCard'),
+            filtersCard: document.getElementById('filtersCard'),
+            draftCards: document.getElementById('draftCards'),
+            emptyProcessing: document.getElementById('emptyProcessing'),
+            bulkActionsPanel: document.getElementById('bulkActionsPanel'),
+            bulkImportBtn: document.getElementById('bulkImportBtn'),
+            bulkUpdateBtn: document.getElementById('bulkUpdateBtn'),
+            auditLogModal: document.getElementById('auditLogModal'),
+            auditLogContent: document.getElementById('auditLogContent'),
+            auditLogModalClose: document.getElementById('auditLogModalClose'),
+            bulkImportModal: document.getElementById('bulkImportModal'),
+            bulkImportModalClose: document.getElementById('bulkImportModalClose'),
+            downloadTemplateBtn: document.getElementById('downloadTemplateBtn'),
+            fileUploadArea: document.getElementById('fileUploadArea'),
+            fileInput: document.getElementById('fileInput'),
+            fileInfo: document.getElementById('fileInfo'),
+            fileName: document.getElementById('fileName'),
+            fileSize: document.getElementById('fileSize'),
+            fileRemove: document.getElementById('fileRemove'),
+            importProgress: document.getElementById('importProgress'),
+            progressFillImport: document.getElementById('progressFillImport'),
+            progressText: document.getElementById('progressText'),
+            cancelImportBtn: document.getElementById('cancelImportBtn'),
+            startImportBtn: document.getElementById('startImportBtn')
+        };
+
+        // Exception handling functions - removed as Exception panel was deleted
+
+        // Lifecycle management functions
+        function performLifecycleAction(tenantId, action) {
+            const tenant = tenants.find(t => t.id === tenantId);
+            if (!tenant) {
+                console.error('Tenant not found');
+                return;
+            }
+
+            try {
+                switch (action) {
+                    case 'suspend':
+                        tenant.status = 'suspended';
+                        console.log('Tenant suspended successfully');
+                        break;
+                    case 'restore':
+                        tenant.status = 'active';
+                        console.log('Tenant restored successfully');
+                        break;
+                    case 'close':
+                        tenant.status = 'closed';
+                        console.log('Tenant closed successfully');
+                        break;
+                    default:
+                        throw new Error('Invalid action');
+                }
+                filterAndRender();
+            } catch (error) {
+                console.error('Failed to perform lifecycle action: ' + error.message);
+            }
+        }
+
+        // Bulk operations
+        function performBulkAction(action) {
+            const selectedTenants = getSelectedTenants();
+            if (selectedTenants.length === 0) {
+                alert('No tenants selected');
+                return;
+            }
+
+            selectedTenants.forEach(tenantId => {
+                performLifecycleAction(tenantId, action);
+            });
+        }
+
+        function getSelectedTenants() {
+            const checkboxes = document.querySelectorAll('.tenant-checkbox:checked');
+            return Array.from(checkboxes).map(cb => parseInt(cb.value));
+        }
+
+        // Business type population
+        function populateBusinessTypes(industry) {
+            els.businessType.innerHTML = '<option value="">All Business Types</option>';
+            const hasIndustry = industry && industry.trim() !== '';
+            els.businessType.disabled = !hasIndustry;
+            if (!hasIndustry) return;
+            (businessTypes[industry] || []).forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type.value;
+                opt.textContent = type.text;
+                els.businessType.appendChild(opt);
+            });
+        }
+
+        // Status badge and indicator
+        function getStatusBadge(status) {
+            const badges = {
+                active: 'badge active',
+                draft: 'badge draft',
+                review: 'badge review',
+                suspended: 'badge suspended',
+                closed: 'badge closed'
+            };
+            return badges[status] || 'badge';
+        }
+
+        function getStatusDot(status) {
+            const dots = {
+                active: 'status-dot active',
+                draft: 'status-dot draft',
+                review: 'status-dot review',
+                suspended: 'status-dot suspended',
+                closed: 'status-dot closed'
+            };
+            return dots[status] || 'status-dot';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                active: 'Active',
+                draft: 'Draft',
+                review: 'In Review',
+                suspended: 'Suspended',
+                closed: 'Closed'
+            };
+            return texts[status] || status;
+        }
+
+        // Render tenant cards
+        function renderCards(filteredTenants, expandFranchisees = false) {
+            els.cards.innerHTML = '';
+            if (!filteredTenants.length) {
+                els.empty.style.display = 'block';
+                return;
+            }
+            els.empty.style.display = 'none';
+
+            filteredTenants.forEach(tenant => {
+                const card = document.createElement('div');
+                card.className = 'franchisor-card';
+                const hasChildren = Array.isArray(tenant.franchisees) && tenant.franchisees.length > 0;
+                const caret = hasChildren ? '<span class="dropdown-icon">▶</span>' : '';
+
+                card.innerHTML = `
+                    <div class="franchisor-header" data-id="${tenant.id}">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                            <input type="checkbox" class="tenant-checkbox" value="${tenant.id}" style="margin:0;">
+                            <div class="franchisor-title">
+                                ${caret}
+                                <div>
+                                    <div><strong>${tenant.name}</strong>
+                                        <span class="${getStatusBadge(tenant.status)}">${getStatusText(tenant.status)}</span>
+                                        <span class="status-indicator">
+                                            <span class="${getStatusDot(tenant.status)}"></span>
+                                        </span>
+                                    </div>
+                                    <div class="muted">${tenant.subdomain}.franchise.com • ${formatIndustry(tenant.industry)} • ${formatBusinessType(tenant.businessType)}</div>
+                                    <div class="muted">Contact: ${tenant.contact} • Created: ${tenant.created} • Last Activity: ${tenant.lastActivity}</div>
+                                </div>
+                            </div>
+                        </label>
+                        <div class="actions">
+                            <a class="btn btn-outline" href="franchisor_edit_screen.html?tenantId=${tenant.id}">Edit</a>
+                            <a class="btn btn-outline" href="franchisor_preview_screen.html?tenantId=${tenant.id}">View</a>
+                            <button class="btn btn-outline" onclick="showAuditLogModal(${tenant.id})">Audit Log</button>
+                        </div>
+                    </div>
+                    <div class="franchisee-list" id="fr-list-${tenant.id}"></div>
+                `;
+                els.cards.appendChild(card);
+
+                if (hasChildren) {
+                    const header = card.querySelector('.franchisor-header');
+                    const list = card.querySelector('#fr-list-' + tenant.id);
+                    const icon = card.querySelector('.dropdown-icon');
+
+                    const buildList = () => {
+                        const items = tenant.franchisees.map(f => `
+                            <div class="franchisee-card">
+                                <div>
+                                    <strong>${f.name}</strong>
+                                    <span class="${getStatusBadge(f.status)}" style="margin-left:8px;">${getStatusText(f.status)}</span>
+                                </div>
+                                <div class="actions">
+                                    <a class="btn btn-outline" href="../[SU] Franchisee/franchisee_edit_screen.html?franchiseeId=${f.id}">Edit</a>
+                                    <a class="btn btn-outline" href="#">View</a>
+                                </div>
+                            </div>
+                        `).join('');
+                        const createBtn = `
+                            <div style="padding: 8px 0;">
+                                <a class="btn btn-primary" href="../[SU] Franchisee/franchisee_create_screen.html?franchisorId=${tenant.id}">+ Create Franchisee</a>
+                            </div>`;
+                        list.innerHTML = items + createBtn;
+                    };
+
+                    header.addEventListener('click', function(e) {
+                        if (e.target.closest('.actions') || e.target.closest('input[type="checkbox"]')) return;
+                        const showing = list.style.display === 'block';
+                        if (showing) {
+                            list.style.display = 'none';
+                            if (icon) icon.classList.remove('expanded');
+                            list.innerHTML = '';
+                        } else {
+                            list.style.display = 'block';
+                            if (icon) icon.classList.add('expanded');
+                            buildList();
+                        }
+                    });
+
+                    if (expandFranchisees) {
+                        list.style.display = 'block';
+                        if (icon) icon.classList.add('expanded');
+                        buildList();
+                    }
+                }
+            });
+        }
+
+        // Filter and render
+        function filterAndRender() {
+            const kw = (els.keyword.value || '').toLowerCase();
+            const ind = els.industry.value;
+            const bt = els.businessType.value;
+            const plan = els.plan.value;
+            const statusFilter = els.status.value;
+            const scope = els.scope.value;
+
+            let filtered = tenants.filter(tenant => {
+                const matchKw = !kw || [tenant.name, tenant.subdomain, tenant.contact].some(v => (v || '').toLowerCase().includes(kw));
+                const matchInd = !ind || tenant.industry === ind;
+                const matchBt = !bt || tenant.businessType === bt;
+                const matchPlan = !plan || tenant.plan === plan;
+                const matchStatus = !statusFilter || tenant.status === statusFilter;
+
+                let franchiseeMatch = true;
+                if (scope === 'franchisee') {
+                    franchiseeMatch = tenant.franchisees && tenant.franchisees.some(f =>
+                        !kw || (f.name || '').toLowerCase().includes(kw)
+                    );
+                }
+
+                return matchKw && matchInd && matchBt && matchPlan && matchStatus && franchiseeMatch;
+            });
+
+            renderCards(filtered, scope === 'franchisee');
+        }
+
+        // Utility functions
+        function formatIndustry(code) {
+            const map = {
+                'food-beverage': 'Food & Beverage',
+                'retail': 'Retail',
+                'services': 'Services',
+                'hospitality': 'Hospitality',
+                'health-medical': 'Health & Medical',
+                'home-garden': 'Home & Garden',
+                'other': 'Other'
+            };
+            return map[code] || code;
+        }
+
+        function formatBusinessType(code) {
+            const all = Object.values(businessTypes).flat();
+            const item = all.find(i => i.value === code);
+            return item ? item.text : code;
+        }
+
+        // Modal management functions
+        function showAuditLogModal(tenantId) {
+            const tenant = tenants.find(t => t.id === tenantId);
+            if (!tenant) {
+                console.error('Tenant not found');
+                return;
+            }
+
+            // Generate mock audit log entries
+            const auditEntries = [
+                {
+                    timestamp: tenant.created,
+                    action: 'Tenant Created',
+                    details: 'Initial tenant setup completed',
+                    user: 'System Admin'
+                },
+                {
+                    timestamp: tenant.lastActivity,
+                    action: 'Profile Updated',
+                    details: 'Contact information and business details modified',
+                    user: 'System Admin'
+                },
+                {
+                    timestamp: tenant.created,
+                    action: 'Status Changed',
+                    details: `Status updated from Draft to ${tenant.status.charAt(0).toUpperCase() + tenant.status.slice(1)}`,
+                    user: 'System Admin'
+                },
+                {
+                    timestamp: tenant.lastActivity,
+                    action: 'Profile Viewed',
+                    details: 'Tenant profile accessed for review',
+                    user: 'System Admin'
+                },
+                {
+                    timestamp: tenant.lastActivity,
+                    action: 'Settings Updated',
+                    details: 'Configuration settings modified',
+                    user: 'System Admin'
+                }
+            ];
+
+            // Sort entries by timestamp (most recent first)
+            auditEntries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            // Build modal content
+            const modalTitle = document.querySelector('#auditLogModal .modal-title');
+            modalTitle.textContent = `Audit Log - ${tenant.name}`;
+
+            const content = auditEntries.map(entry => `
+                <div class="audit-entry">
+                    <div class="audit-timestamp">${new Date(entry.timestamp).toLocaleString()}</div>
+                    <div class="audit-action">${entry.action}</div>
+                    <div class="audit-details">
+                        ${entry.details}
+                        <span class="audit-user">by ${entry.user}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            els.auditLogContent.innerHTML = content;
+            els.auditLogModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function hideAuditLogModal() {
+            els.auditLogModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
+
+        // Bulk import modal functions
+        function showBulkImportModal() {
+            resetBulkImportModal();
+            els.bulkImportModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideBulkImportModal() {
+            els.bulkImportModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            resetBulkImportModal();
+        }
+
+        function resetBulkImportModal() {
+            // Reset file input
+            els.fileInput.value = '';
+            // Hide file info
+            els.fileInfo.classList.remove('show');
+            // Hide progress
+            els.importProgress.classList.remove('show');
+            // Reset progress
+            els.progressFillImport.style.width = '0%';
+            els.progressText.textContent = 'Validating data...';
+            // Disable start button
+            els.startImportBtn.disabled = true;
+            // Remove dragover class
+            els.fileUploadArea.classList.remove('dragover');
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function downloadTemplate() {
+            // Create a blob with the template content
+            const templateContent = `Tenant Name,Subdomain,Industry,Business Type,Contact Email,Phone,Mobile,Website,Street Address,City,State,Postal Code,Country,Language,Timezone,Currency,Subscription Plan,Send Welcome Email,Require Password Change
+Acme Burgers,acme,food-beverage,restaurant-fast-food,jane@acmeburgers.com,+1 555 123 4567,+1 555 123 4568,https://acmeburgers.com,123 Main St,Springfield,CA,12345,US,en,UTC-8,USD,professional,true,true
+Bright Retail,bright,retail,electronics,manager@brightretail.com,+1 555 234 5678,,https://brightretail.com,456 Oak Ave,Austin,TX,78701,US,en,UTC-6,USD,enterprise,true,true
+Care Services Co,care,services,childcare,admin@careservices.com,+1 555 345 6789,,https://careservices.com,789 Pine Rd,Seattle,WA,98101,US,en,UTC-8,USD,basic,true,true
+Fresh Foods Market,fresh,food-beverage,restaurant-casual,owner@freshfoods.com,+1 555 456 7890,,https://freshfoods.com,321 Elm St,Denver,CO,80202,US,en,UTC-7,USD,professional,true,true
+Tech Solutions Inc,tech,services,consulting,contact@techsolutions.com,+1 555 567 8901,,https://techsolutions.com,654 Cedar Ln,Boston,MA,02101,US,en,UTC-5,USD,enterprise,true,true
+Green Landscaping,green,home-garden,landscaping,info@greenlandscape.com,+1 555 678 9012,,https://greenlandscape.com,987 Birch St,Portland,OR,97201,US,en,UTC-8,USD,basic,true,true`;
+
+            const blob = new Blob([templateContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'bulk_import_template.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            alert('Template downloaded successfully!');
+        }
+
+        function handleFileSelect(file) {
+            // Validate file type
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                alert('Please select a CSV file only.');
+                return;
+            }
+
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size must be less than 10MB.');
+                return;
+            }
+
+            // Show file info
+            els.fileName.textContent = file.name;
+            els.fileSize.textContent = formatFileSize(file.size);
+            els.fileInfo.classList.add('show');
+
+            // Enable start button
+            els.startImportBtn.disabled = false;
+        }
+
+        function simulateImport() {
+            // Disable buttons during import
+            els.startImportBtn.disabled = true;
+            els.cancelImportBtn.disabled = true;
+
+            // Show progress
+            els.importProgress.classList.add('show');
+
+            const steps = [
+                { progress: 20, text: 'Reading file...' },
+                { progress: 40, text: 'Validating data...' },
+                { progress: 60, text: 'Processing records...' },
+                { progress: 80, text: 'Creating tenant accounts...' },
+                { progress: 100, text: 'Import completed!' }
+            ];
+
+            let currentStep = 0;
+
+            const interval = setInterval(() => {
+                if (currentStep < steps.length) {
+                    const step = steps[currentStep];
+                    els.progressFillImport.style.width = step.progress + '%';
+                    els.progressText.textContent = step.text;
+                    currentStep++;
+                } else {
+                    clearInterval(interval);
+                    // Import completed
+                    setTimeout(() => {
+                        alert('Bulk import completed successfully! 6 tenants imported.');
+                        hideBulkImportModal();
+                        // Refresh the tenant list
+                        filterAndRender();
+                    }, 1000);
+                }
+            }, 800);
+        }
+
+        // Tab switching
+        function showTab(tab) {
+            const isAll = tab === 'all';
+            const isActive = tab === 'active';
+            const isReview = tab === 'review';
+            const isSuspended = tab === 'suspended';
+            const isProcessing = tab === 'processing';
+
+            els.tabAll.classList.toggle('active', isAll);
+            els.tabActive.classList.toggle('active', isActive);
+            els.tabReview.classList.toggle('active', isReview);
+            els.tabSuspended.classList.toggle('active', isSuspended);
+            els.tabProcessing.classList.toggle('active', isProcessing);
+
+            els.resultsCard.style.display = isProcessing ? 'none' : 'block';
+            els.filtersCard.style.display = isProcessing ? 'none' : 'block';
+            els.processingCard.style.display = isProcessing ? 'block' : 'none';
+            els.bulkActionsPanel.style.display = (isAll || isActive || isReview || isSuspended) ? 'block' : 'none';
+
+            if (isProcessing) {
+                renderDrafts();
+            } else {
+                // Filter by status for specific tabs
+                let statusFilter = '';
+                if (isActive) statusFilter = 'active';
+                else if (isReview) statusFilter = 'review';
+                else if (isSuspended) statusFilter = 'suspended';
+                // For 'all' tab, don't set a status filter
+
+                els.status.value = statusFilter;
+                filterAndRender();
+            }
+        }
+
+        // Draft management (for processing tab)
+        function renderDrafts() {
+            const drafts = JSON.parse(localStorage.getItem('tenantDrafts') || '[]')
+                .sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+            els.draftCards.innerHTML = '';
+            if (!drafts.length) {
+                els.emptyProcessing.style.display = 'block';
+                return;
+            }
+            els.emptyProcessing.style.display = 'none';
+
+            drafts.forEach(d => {
+                const name = (d.data && (d.data.franchisorName || d.data.contactName || d.data.subdomain)) || 'Untitled Tenant';
+                const type = d.data && d.data.tenantType ? d.data.tenantType : 'single';
+                const when = new Date(d.updatedAt || Date.now()).toLocaleString();
+                const card = document.createElement('div');
+                card.className = 'draft-card';
+                card.innerHTML = `
+                    <div>
+                        <div><strong>${name}</strong> <span class="badge draft">Draft</span></div>
+                        <div class="muted-sm">Updated ${when} • Type: ${type === 'franchisor' ? 'Franchisor' : 'Single Store'}</div>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-outline" href="franchisor_create_screen.html?draftId=${d.id}">Continue</a>
+                        <button class="btn btn-danger" onclick="deleteDraft('${d.id}')">Delete</button>
+                    </div>
+                `;
+                els.draftCards.appendChild(card);
+            });
+        }
+
+        function deleteDraft(draftId) {
+            if (!confirm('Are you sure you want to delete this draft?')) return;
+            const drafts = JSON.parse(localStorage.getItem('tenantDrafts') || '[]');
+            const filtered = drafts.filter(d => d.id !== draftId);
+            localStorage.setItem('tenantDrafts', JSON.stringify(filtered));
+            renderDrafts();
+        }
+
+        // Event listeners
+        els.keyword.addEventListener('input', filterAndRender);
+        els.industry.addEventListener('change', function() {
+            populateBusinessTypes(this.value);
+            filterAndRender();
+        });
+        els.businessType.addEventListener('change', filterAndRender);
+        els.plan.addEventListener('change', filterAndRender);
+        els.status.addEventListener('change', filterAndRender);
+        els.scope.addEventListener('change', filterAndRender);
+        els.refresh.addEventListener('click', filterAndRender);
+
+        // Tab listeners
+        els.tabAll.addEventListener('click', () => showTab('all'));
+        els.tabActive.addEventListener('click', () => showTab('active'));
+        els.tabReview.addEventListener('click', () => showTab('review'));
+        els.tabSuspended.addEventListener('click', () => showTab('suspended'));
+        els.tabProcessing.addEventListener('click', () => showTab('processing'));
+
+        // Bulk action listeners
+        document.getElementById('approveSelected').addEventListener('click', () => performBulkAction('restore'));
+        document.getElementById('suspendSelected').addEventListener('click', () => performBulkAction('suspend'));
+        document.getElementById('closeSelected').addEventListener('click', () => performBulkAction('close'));
+        document.getElementById('exportSelected').addEventListener('click', () => {
+            const selected = getSelectedTenants();
+            if (selected.length === 0) {
+                alert('No tenants selected for export');
+                return;
+            }
+            alert(`Exporting ${selected.length} tenants...`);
+        });
+
+        // Exception handling listeners - removed as Exception panel was deleted
+
+        // Modal event listeners
+        els.auditLogModalClose.addEventListener('click', hideAuditLogModal);
+        els.auditLogModal.addEventListener('click', (e) => {
+            if (e.target === els.auditLogModal) {
+                hideAuditLogModal();
+            }
+        });
+
+        // Bulk import modal event listeners
+        els.bulkImportModalClose.addEventListener('click', hideBulkImportModal);
+        els.bulkImportModal.addEventListener('click', (e) => {
+            if (e.target === els.bulkImportModal) {
+                hideBulkImportModal();
+            }
+        });
+
+        // Download template button
+        els.downloadTemplateBtn.addEventListener('click', downloadTemplate);
+
+        // File upload area click
+        els.fileUploadArea.addEventListener('click', () => {
+            els.fileInput.click();
+        });
+
+        // File input change
+        els.fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelect(file);
+            }
+        });
+
+        // Drag and drop functionality
+        els.fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            els.fileUploadArea.classList.add('dragover');
+        });
+
+        els.fileUploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            els.fileUploadArea.classList.remove('dragover');
+        });
+
+        els.fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            els.fileUploadArea.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                // Set the file input value for consistency
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                els.fileInput.files = dt.files;
+                handleFileSelect(file);
+            }
+        });
+
+        // File remove button
+        els.fileRemove.addEventListener('click', () => {
+            resetBulkImportModal();
+        });
+
+        // Cancel button
+        els.cancelImportBtn.addEventListener('click', hideBulkImportModal);
+
+        // Start import button
+        els.startImportBtn.addEventListener('click', simulateImport);
+
+        // Bulk import/update listeners
+        els.bulkImportBtn.addEventListener('click', showBulkImportModal);
+
+        els.bulkUpdateBtn.addEventListener('click', () => {
+            alert('Bulk update functionality would open a CSV editor here.');
+        });
+
+        // Initialize
+        populateBusinessTypes(els.industry.value);
+        showTab('all');
+        filterAndRender();
+
+        // Periodic system checks (for demo)
+        setInterval(() => {
+            // Randomly log system events for demo (remove in production)
+            if (Math.random() < 0.1) { // 10% chance
+                const events = [
+                    'Database connection timeout detected',
+                    'Bulk import validation failed for 3 records',
+                    'Audit log synchronization error',
+                    'Permission check failed for tenant access'
+                ];
+                const randomEvent = events[Math.floor(Math.random() * events.length)];
+                console.warn('System event:', randomEvent);
+            }
+        }, 30000); // Check every 30 seconds
+    </script>
+</body>
+</html>

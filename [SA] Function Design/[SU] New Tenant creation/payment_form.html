@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Details</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .subtitle { color: #6c757d; margin-top: 8px; font-size: 16px; }
+        .payment-summary { background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid #e9ecef; }
+        .summary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e9ecef; }
+        .plan-name { font-size: 18px; font-weight: 600; color: #2c3e50; }
+        .plan-price { font-size: 24px; font-weight: 700; color: #007bff; }
+        .payment-form { background: white; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px rgba(0,0,0,0.07); }
+        .form-section { margin-bottom: 24px; }
+        .section-title { font-size: 18px; font-weight: 600; color: #2c3e50; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #007bff; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-weight: 500; margin-bottom: 6px; color: #495057; }
+        .required { color: #dc3545; }
+        input, select { padding: 12px; border: 2px solid #e9ecef; border-radius: 6px; font-size: 14px; transition: border-color 0.3s ease; }
+        input:focus, select:focus { outline: none; border-color: #007bff; }
+        .card-details { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+        .actions { display: flex; gap: 16px; justify-content: space-between; margin-top: 32px; }
+        .btn { padding: 14px 28px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all .2s ease; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-primary:hover { background: #0056b3; transform: translateY(-1px); }
+        .btn-outline { background: transparent; color: #6c757d; border: 2px solid #6c757d; }
+        .btn-outline:hover { background: #6c757d; color: white; }
+        .security-note { background: #f8f9fa; border-left: 4px solid #28a745; padding: 16px; border-radius: 4px; margin-top: 16px; font-size: 14px; }
+        .security-note::before { content: '🔒'; margin-right: 8px; }
+        .processing { display: none; text-align: center; color: #6c757d; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #007bff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; display: inline-block; margin-right: 12px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .stripe-element { padding: 12px; border: 2px solid #e9ecef; border-radius: 6px; background: white; transition: border-color 0.3s ease; }
+        .stripe-element.StripeElement--focus { border-color: #007bff; box-shadow: 0 0 0 3px rgba(0,123,255,0.1); }
+        .stripe-element.StripeElement--invalid { border-color: #dc3545; }
+        .stripe-element.StripeElement--invalid.StripeElement--focus { box-shadow: 0 0 0 3px rgba(220,53,69,0.1); }
+        .payment-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .payment-method-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 2px solid #e9ecef; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+        .payment-method-option:hover { border-color: #007bff; background: #f8f9ff; }
+        .payment-method-option.selected { border-color: #007bff; background: #e7f3ff; }
+        .payment-method-radio { display: none; }
+        .payment-method-label { display: flex; align-items: center; gap: 12px; cursor: pointer; width: 100%; }
+        .payment-method-icon { font-size: 24px; }
+        .payment-method-text { font-weight: 500; }
+        .payment-forms { margin-top: 24px; }
+        .payment-form-section { display: none; }
+        .payment-form-section.active { display: block; }
+        #apple-pay-button, #google-pay-button { margin: 16px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Complete Your Payment</h1>
+            <div class="subtitle">Secure payment processing for your subscription</div>
+        </div>
+
+        <div class="payment-summary">
+            <div class="summary-header">
+                <div class="plan-name" id="planDisplay">Loading plan details...</div>
+                <div class="plan-price" id="priceDisplay">$0</div>
+            </div>
+            <div id="planFeatures">Loading features...</div>
+        </div>
+
+        <form class="payment-form" id="paymentForm" onsubmit="processPayment(event)">
+            <div class="form-section">
+                <h3 class="section-title">Billing Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="address">Billing Address <span class="required">*</span></label>
+                        <input type="text" id="address" placeholder="Street address" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City <span class="required">*</span></label>
+                        <input type="text" id="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State/Province <span class="required">*</span></label>
+                        <input type="text" id="state" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">ZIP/Postal Code <span class="required">*</span></label>
+                        <input type="text" id="zipCode" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="country">Country <span class="required">*</span></label>
+                        <select id="country" required>
+                            <option value="">Select Country</option>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="AU">Australia</option>
+                            <option value="GB">United Kingdom</option>
+                            <option value="DE">Germany</option>
+                            <option value="FR">France</option>
+                            <option value="JP">Japan</option>
+                            <option value="SG">Singapore</option>
+                            <option value="VN">Vietnam</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Payment Method</h3>
+                <div class="payment-methods">
+                    <div class="payment-method-option" onclick="selectPaymentMethod('card')" id="cardOption">
+                        <input type="radio" name="paymentMethod" value="card" class="payment-method-radio" id="cardRadio">
+                        <label for="cardRadio" class="payment-method-label">
+                            <span class="payment-method-icon">💳</span>
+                            <div class="payment-method-text">Credit/Debit Card</div>
+                        </label>
+                    </div>
+                    <div class="payment-method-option" onclick="selectPaymentMethod('apple_pay')" id="applePayOption">
+                        <input type="radio" name="paymentMethod" value="apple_pay" class="payment-method-radio" id="applePayRadio">
+                        <label for="applePayRadio" class="payment-method-label">
+                            <span class="payment-method-icon">🍎</span>
+                            <div class="payment-method-text">Apple Pay</div>
+                        </label>
+                    </div>
+                    <div class="payment-method-option" onclick="selectPaymentMethod('google_pay')" id="googlePayOption">
+                        <input type="radio" name="paymentMethod" value="google_pay" class="payment-method-radio" id="googlePayRadio">
+                        <label for="googlePayRadio" class="payment-method-label">
+                            <span class="payment-method-icon">🇬</span>
+                            <div class="payment-method-text">Google Pay</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-forms">
+                    <div class="payment-form-section active" id="cardForm">
+                        <div class="form-row">
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Card Information <span class="required">*</span></label>
+                                <div id="card-element" class="stripe-element"></div>
+                                <div id="card-errors" class="error-message" role="alert"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-form-section" id="applePayForm">
+                        <div id="apple-pay-button" style="display: none;"></div>
+                        <p>Click "Pay Now" to complete your purchase with Apple Pay.</p>
+                    </div>
+
+                    <div class="payment-form-section" id="googlePayForm">
+                        <div id="google-pay-button" style="display: none;"></div>
+                        <p>Click "Pay Now" to complete your purchase with Google Pay.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="security-note">
+                Your payment information is encrypted and secure. We use industry-standard SSL encryption and comply with PCI DSS standards.
+            </div>
+
+            <div class="actions">
+                <a href="#" onclick="goBackToPlans()" class="btn btn-outline">← Back to Plans</a>
+                <button type="submit" class="btn btn-primary" id="payBtn">
+                    Pay Now →
+                </button>
+            </div>
+
+            <div class="processing" id="processing">
+                <div class="spinner"></div>
+                Processing payment... Please wait.
+            </div>
+        </form>
+    </div>
+
+    <script src="email_service.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedPlan = urlParams.get('plan') || localStorage.getItem('selectedPlan');
+        const accountType = urlParams.get('type') || localStorage.getItem('accountType');
+
+        let selectedPaymentMethod = 'card'; // Default to card payment
+
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_51EXAMPLE...'); // Replace with your actual publishable key
+        const elements = stripe.elements();
+
+        // Create card element
+        const cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#424770',
+                    '::placeholder': {
+                        color: '#aab7c4',
+                    },
+                },
+            },
+        });
+
+        // Create payment request for Apple Pay and Google Pay
+        const paymentRequest = stripe.paymentRequest({
+            country: 'US',
+            currency: 'usd',
+            total: {
+                label: 'Total',
+                amount: plans[selectedPlan]?.price * 100 || 0,
+            },
+            requestPayerName: true,
+            requestPayerEmail: true,
+        });
+
+        // Check if Apple Pay or Google Pay is available
+        paymentRequest.canMakePayment().then(result => {
+            if (result) {
+                if (result.applePay) {
+                    document.getElementById('applePayOption').style.display = 'flex';
+                }
+                if (result.googlePay) {
+                    document.getElementById('googlePayOption').style.display = 'flex';
+                }
+            }
+        });
+
+        // Mount the card element
+        cardElement.mount('#card-element');
+
+        // Handle real-time validation errors
+        cardElement.on('change', function(event) {
+            const displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle payment method selection
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+
+            // Update UI to show selected method
+            document.querySelectorAll('.payment-method-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById(method + 'Option').classList.add('selected');
+
+            // Update radio buttons
+            document.querySelectorAll('.payment-method-radio').forEach(radio => {
+                radio.checked = false;
+            });
+            document.getElementById(method + 'Radio').checked = true;
+
+            // Show/hide payment forms
+            document.querySelectorAll('.payment-form-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(method + 'Form').classList.add('active');
+
+            // Update pay button text
+            const payBtn = document.getElementById('payBtn');
+            if (method === 'apple_pay') {
+                payBtn.innerHTML = '<span>🍎</span> Pay with Apple Pay →';
+            } else if (method === 'google_pay') {
+                payBtn.innerHTML = '<span>🇬</span> Pay with Google Pay →';
+            } else {
+                payBtn.innerHTML = 'Pay Now →';
+            }
+        }
+
+        // Plan details (includes both franchisor and single store plans)
+        const plans = {
+            // Franchisor plans
+            starter: {
+                name: 'Starter Plan',
+                price: 49,
+                period: 'per month',
+                features: ['Up to 5 franchisees', 'Basic reporting', 'Email support', 'Mobile app access', 'Standard integrations']
+            },
+            professional: {
+                name: 'Professional Plan',
+                price: 99,
+                period: 'per month',
+                features: ['Up to 25 franchisees', 'Advanced analytics', 'Priority support', 'Custom branding', 'All integrations', 'API access']
+            },
+            enterprise: {
+                name: 'Enterprise Plan',
+                price: 199,
+                period: 'per month',
+                features: ['Unlimited franchisees', 'White-label solution', 'Dedicated support', 'Custom development', 'Advanced security', 'SLA guarantee']
+            },
+            // Single store plans
+            basic: {
+                name: 'Basic Plan',
+                price: 19,
+                period: 'per month',
+                features: ['Up to 5 staff members', 'Basic reporting', 'Email support', 'Mobile app access', 'Standard integrations']
+            },
+            standard: {
+                name: 'Standard Plan',
+                price: 39,
+                period: 'per month',
+                features: ['Up to 15 staff members', 'Advanced reporting', 'Priority support', 'Custom branding', 'All integrations', 'API access']
+            },
+            premium: {
+                name: 'Premium Plan',
+                price: 69,
+                period: 'per month',
+                features: ['Up to 50 staff members', 'Advanced analytics', 'Dedicated support', 'White-label solution', 'Advanced security', 'Custom integrations']
+            }
+        };
+
+        function loadPlanDetails() {
+            if (!selectedPlan || !plans[selectedPlan]) {
+                document.getElementById('planDisplay').textContent = 'Plan not selected';
+                document.getElementById('priceDisplay').textContent = '$0';
+                return;
+            }
+
+            const plan = plans[selectedPlan];
+            document.getElementById('planDisplay').textContent = plan.name;
+            document.getElementById('priceDisplay').textContent = `$${plan.price} ${plan.period}`;
+
+            const featuresList = plan.features.map(feature => `<li>${feature}</li>`).join('');
+            document.getElementById('planFeatures').innerHTML = `<ul style="list-style: none; padding: 0;">${featuresList}</ul>`;
+
+            // Update payment request amount
+            paymentRequest.update({
+                total: {
+                    label: `${plan.name} (${plan.period})`,
+                    amount: plan.price * 100,
+                },
+            });
+        }
+
+        async function processPayment(event) {
+            event.preventDefault();
+
+            // Basic validation for billing fields
+            const requiredFields = ['firstName', 'lastName', 'email', 'address', 'city', 'state', 'zipCode', 'country'];
+            let isValid = true;
+
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.style.borderColor = '#dc3545';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#e9ecef';
+                }
+            });
+
+            if (!isValid) {
+                alert('Please fill in all required billing fields.');
+                return;
+            }
+
+            // Disable the submit button and show processing
+            document.getElementById('payBtn').disabled = true;
+            document.getElementById('processing').style.display = 'block';
+
+            try {
+                if (selectedPaymentMethod === 'apple_pay' || selectedPaymentMethod === 'google_pay') {
+                    // Handle Apple Pay and Google Pay
+                    paymentRequest.show();
+
+                    // Handle the payment method result
+                    paymentRequest.on('paymentmethod', async (ev) => {
+                        console.log('Payment method received:', ev.paymentMethod.id);
+
+                        // Simulate payment processing
+                        setTimeout(() => {
+                            // Store payment details for success page
+                            localStorage.setItem('paymentCompleted', 'true');
+                            localStorage.setItem('accountType', accountType);
+                            localStorage.setItem('selectedPlan', selectedPlan);
+                            localStorage.setItem('paymentMethodId', ev.paymentMethod.id);
+                            localStorage.setItem('paymentMethodType', selectedPaymentMethod);
+
+                            // Send activation emails
+                            sendActivationEmails(accountType);
+
+                            // Complete the payment request
+                            ev.complete('success');
+
+                            // Redirect to success page
+                            window.location.href = `payment_success.html?type=${accountType}&plan=${selectedPlan}`;
+                        }, 3000);
+                    });
+
+                    paymentRequest.on('cancel', () => {
+                        document.getElementById('payBtn').disabled = false;
+                        document.getElementById('processing').style.display = 'none';
+                        console.log('Payment cancelled');
+                    });
+
+                } else {
+                    // Handle card payment
+                    const { error, paymentMethod } = await stripe.createPaymentMethod({
+                        type: 'card',
+                        card: cardElement,
+                        billing_details: {
+                            name: `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`,
+                            email: document.getElementById('email').value,
+                            phone: document.getElementById('phone').value,
+                            address: {
+                                line1: document.getElementById('address').value,
+                                city: document.getElementById('city').value,
+                                state: document.getElementById('state').value,
+                                postal_code: document.getElementById('zipCode').value,
+                                country: document.getElementById('country').value,
+                            },
+                        },
+                    });
+
+                    if (error) {
+                        document.getElementById('card-errors').textContent = error.message;
+                        document.getElementById('payBtn').disabled = false;
+                        document.getElementById('processing').style.display = 'none';
+                        return;
+                    }
+
+                    // In a real implementation, you would create a PaymentIntent on your server
+                    // For this demo, we'll simulate the payment processing
+                    console.log('Payment method created:', paymentMethod.id);
+
+                    // Simulate server-side payment processing
+                    setTimeout(() => {
+                        // Store payment details for success page
+                        localStorage.setItem('paymentCompleted', 'true');
+                        localStorage.setItem('accountType', accountType);
+                        localStorage.setItem('selectedPlan', selectedPlan);
+                        localStorage.setItem('paymentMethodId', paymentMethod.id);
+                        localStorage.setItem('paymentMethodType', 'card');
+
+                        // Send activation emails
+                        sendActivationEmails(accountType);
+
+                        // Send welcome email with plan + invoice summary
+                        sendWelcomeEmailWithInvoice();
+                        // Send activation emails
+                        sendActivationEmails(accountType);
+
+                        // Send welcome email with plan + invoice summary
+                        sendWelcomeEmailWithInvoice();
+
+                        // Redirect to success page
+                        window.location.href = `payment_success.html?type=${accountType}&plan=${selectedPlan}`;
+                    }, 3000);
+                }
+
+            } catch (error) {
+                console.error('Payment processing error:', error);
+                document.getElementById('card-errors').textContent = 'An error occurred while processing your payment. Please try again.';
+                document.getElementById('payBtn').disabled = false;
+                document.getElementById('processing').style.display = 'none';
+            }
+        }
+
+        function sendActivationEmails(accountType) {
+            if (accountType === 'franchisor') {
+                // Load franchisor and franchisee data
+                const franchisorData = JSON.parse(localStorage.getItem('franchisorFormData') || '{}');
+                const franchiseeData = JSON.parse(localStorage.getItem('franchiseeFormData') || '[]');
+
+                if (franchisorData.email) {
+                    // Send franchisor activation email
+                    if (window.emailService) {
+                        window.emailService.sendFranchisorActivation(franchisorData);
+                    }
+
+                    // Send super admin notification
+                    if (window.emailService) {
+                        window.emailService.sendSuperAdminNotification(franchisorData, 'Franchisor');
+                    }
+                }
+
+                // Send franchisee invitation emails
+                franchiseeData.forEach(franchisee => {
+                    franchisee.id = `franchisee_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                    if (window.emailService) {
+                        window.emailService.sendFranchiseeInvitation(franchisee, franchisorData);
+                    }
+                });
+
+            } else if (accountType === 'single_store') {
+                // Load store data
+                const storeData = JSON.parse(localStorage.getItem('storeFormData') || '{}');
+
+                if (storeData.email) {
+                    // Send store activation email
+                    if (window.emailService) {
+                        window.emailService.sendSingleStoreActivation(storeData);
+                    }
+
+                    // Send super admin notification
+                    if (window.emailService) {
+                        window.emailService.sendSuperAdminNotification(storeData, 'Single Store');
+                    }
+                }
+            }
+        }
+
+        function generateInvoiceNumber() {
+            const ts = Date.now();
+            const rand = Math.random().toString(36).substr(2, 6).toUpperCase();
+            return `INV-${ts}-${rand}`;
+        }
+
+        function sendWelcomeEmailWithInvoice() {
+            if (!window.emailService) return;
+
+            const plan = plans[selectedPlan];
+            const invoiceNumber = generateInvoiceNumber();
+            const invoiceUrl = `${window.location.origin}/invoice.html?no=${encodeURIComponent(invoiceNumber)}&plan=${encodeURIComponent(selectedPlan)}`;
+
+            if (accountType === 'franchisor') {
+                const franchisorData = JSON.parse(localStorage.getItem('franchisorFormData') || '{}');
+                if (franchisorData?.email) {
+                    window.emailService.sendWelcomeWithInvoiceEmail({
+                        toEmail: franchisorData.email,
+                        recipientName: franchisorData.contactName || franchisorData.businessName || 'there',
+                        accountType: 'franchisor',
+                        businessName: franchisorData.businessName || '',
+                        planKey: selectedPlan,
+                        planName: plan?.name || selectedPlan,
+                        amount: plan?.price || 0,
+                        currency: 'USD',
+                        period: plan?.period || 'per month',
+                        invoiceNumber,
+                        invoiceDate: new Date().toISOString(),
+                        invoiceUrl,
+                        dashboardLink: `${window.location.origin}/[SU] Franchisor Management/franchisor_create_screen.html`,
+                        contentFormat: 'markdown'
+                    });
+                }
+            } else if (accountType === 'single_store') {
+                const storeData = JSON.parse(localStorage.getItem('storeFormData') || '{}');
+                if (storeData?.email) {
+                    window.emailService.sendWelcomeWithInvoiceEmail({
+                        toEmail: storeData.email,
+                        recipientName: storeData.contactName || storeData.businessName || 'there',
+                        accountType: 'single_store',
+                        businessName: storeData.businessName || '',
+                        planKey: selectedPlan,
+                        planName: plan?.name || selectedPlan,
+                        amount: plan?.price || 0,
+                        currency: 'USD',
+                        period: plan?.period || 'per month',
+                        invoiceNumber,
+                        invoiceDate: new Date().toISOString(),
+                        invoiceUrl,
+                        dashboardLink: `${window.location.origin}/[SU] Franchisor Management/Tenant_managment_screen.html`,
+                        contentFormat: 'markdown'
+                    });
+                }
+            }
+        }
+
+        function goBackToPlans() {
+            const planSelectionPage = accountType === 'single_store'
+                ? 'subscription_plan_selection_single_store.html'
+                : 'subscription_plan_selection.html';
+            window.location.href = `${planSelectionPage}?type=${accountType}&plan=${selectedPlan}`;
+        }
+
+        // Initialize with card payment method selected
+        selectPaymentMethod('card');
+
+        // Load plan details on page load
+        loadPlanDetails();
+    </script>
+</body>
+</html>
