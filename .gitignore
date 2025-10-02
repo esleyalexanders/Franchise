@@ -1,0 +1,8 @@
+# Ignore all files except tenant_management_screen.html
+*
+
+# But don't ignore index.html
+!index.html
+
+# Also don't ignore this .gitignore file
+!.gitignore
