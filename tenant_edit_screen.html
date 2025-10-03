@@ -510,6 +510,17 @@
                     <h2 class="section-title">Basic Information</h2>
                     <div class="form-row">
                         <div class="form-group">
+                            <label class="form-label" for="tenantType">Tenant Type <span class="required">*</span></label>
+                            <select id="tenantType" name="tenantType" class="form-select" required disabled>
+                                <option value="">Select Tenant Type</option>
+                                <option value="franchisor">Franchisor</option>
+                                <option value="single-store">Single Store</option>
+                            </select>
+                            <div class="error-message" id="tenantTypeError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
                             <label class="form-label" for="brandName">Brand/Business Name <span class="required">*</span></label>
                             <input type="text" id="brandName" name="brandName" class="form-input" placeholder="Enter brand or business name" required>
                             <div class="error-message" id="brandNameError"></div>
@@ -518,12 +529,6 @@
                             <label class="form-label" for="abn">Business Registration Number (ABN) <span class="required">*</span></label>
                             <input type="text" id="abn" name="abn" class="form-input" placeholder="Enter ABN" required>
                             <div class="error-message" id="abnError"></div>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label" for="tenantType">Tenant Type</label>
-                            <input type="text" id="tenantType" name="tenantType" class="form-input" disabled>
                         </div>
                     </div>
                     <div class="form-row full-width">
@@ -895,10 +900,22 @@
 
         // Initialize form with existing data
         function initializeForm() {
+            // Set tenant type from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlType = (urlParams.get('type') || '').toLowerCase();
+            const tenantTypeSelect = document.getElementById('tenantType');
+            if (tenantTypeSelect) {
+                if (urlType === 'franchisor') {
+                    tenantTypeSelect.value = 'franchisor';
+                } else if (urlType === 'single-store' || urlType === 'single_store' || urlType === 'single') {
+                    tenantTypeSelect.value = 'single-store';
+                }
+            }
+
             // Populate all form fields with existing tenant data
             Object.keys(tenantData).forEach(key => {
                 const element = document.getElementById(key);
-                if (element) {
+                if (element && key !== 'tenantType') { // Skip tenantType as it's set from URL
                     if (element.type === 'checkbox') {
                         element.checked = tenantData[key];
                     } else {
@@ -906,16 +923,6 @@
                     }
                 }
             });
-
-            // If URL provides type, align Business Type select
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlType = (urlParams.get('type') || '').toLowerCase();
-            if (urlType) {
-                const bt = document.getElementById('businessType');
-                if (bt) {
-                    bt.value = urlType === 'franchisor' ? 'franchisor' : 'single-store';
-                }
-            }
 
             // Populate subscription plan display
             populateSubscriptionPlan();
@@ -962,13 +969,16 @@
 
         function upgradePlan(e) {
             if (e) e.preventDefault();
-            const type = getTenantType();
+            // Get tenant type from the select element
+            const tenantTypeSelect = document.getElementById('tenantType');
+            const type = tenantTypeSelect.value;
             const isFranchisor = type === 'franchisor';
             const currentId = getCurrentPlanId(type);
             const currentParam = currentId ? `&current=${encodeURIComponent(currentId)}` : '';
+            // Route to the appropriate subscription plan page
             const target = isFranchisor
-                ? '[SA] Function Design/[SU] New Tenant creation/subscription_plan_selection.html?from=edit' + currentParam
-                : '[SA] Function Design/[SU] New Tenant creation/subscription_plan_selection_single_store.html?from=edit' + currentParam;
+                ? 'Franchisor_subscription_plan.html?from=edit' + currentParam
+                : 'Single_store_subscription_plan.html?from=edit' + currentParam;
             window.location.href = target;
         }
 
