@@ -119,12 +119,35 @@
                 return;
             }
 
-            // Get account type from URL params or localStorage
             const urlParams = new URLSearchParams(window.location.search);
+            const fromCreate = urlParams.get('from') === 'create';
             const accountType = urlParams.get('type') || localStorage.getItem('accountType') || 'single_store';
-
-            // Redirect to payment form with plan and account type
-            window.location.href = `payment_form.html?plan=${selectedPlan}&type=${accountType}`;
+            
+            // Get pending tenant data if coming from create screen
+            const pendingTenantData = fromCreate ? localStorage.getItem('pendingTenantData') : null;
+            
+            // Prepare parameters for subscription page
+            const params = new URLSearchParams({
+                plan: selectedPlan,
+                type: accountType,
+                from: fromCreate ? 'create' : 'edit'
+            });
+            
+            if (pendingTenantData) {
+                // Store tenant data in localStorage for subscription
+                localStorage.setItem('pendingTenantData', pendingTenantData);
+            }
+            
+            // Store plan details for subscription page
+            const planDetails = {
+                name: document.querySelector(`[data-plan="${selectedPlan}"] .plan-name`).textContent,
+                price: document.querySelector(`[data-plan="${selectedPlan}"] .plan-price`).textContent,
+                period: document.querySelector(`[data-plan="${selectedPlan}"] .plan-period`).textContent
+            };
+            localStorage.setItem('selectedPlanDetails', JSON.stringify(planDetails));
+            
+            // Redirect to subscription page
+            window.location.href = `subscribe.html?${params.toString()}`;
         }
 
         // Pre-select plan if coming back from payment

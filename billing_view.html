@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Information</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .back-link {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-link:hover { text-decoration: underline; }
+        .page-title { font-size: 28px; color: #2c3e50; }
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .billing-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        .billing-table th,
+        .billing-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .billing-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        .billing-table tr:hover { background-color: #f8f9fa; }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .plan-info {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .plan-details {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .plan-details:last-child { border-bottom: none; }
+        .plan-label { color: #6c757d; }
+        .plan-value { font-weight: 600; color: #2c3e50; }
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .card-icon {
+            font-size: 24px;
+            color: #6c757d;
+        }
+        .card-details {
+            flex: 1;
+        }
+        .card-number {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-outline {
+            background: transparent;
+            color: #6c757d;
+            border: 2px solid #6c757d;
+        }
+        .btn-outline:hover {
+            background: #6c757d;
+            color: white;
+        }
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="javascript:history.back()" class="back-link">← Back</a>
+            <h1 class="page-title">Billing Information</h1>
+            <div></div>
+        </div>
+
+        <div class="billing-grid">
+            <div class="card">
+                <h2 class="section-title">Billing History</h2>
+                <table class="billing-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Oct 1, 2025</td>
+                            <td>Professional Plan - Monthly Subscription</td>
+                            <td>$299.00</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>Sep 1, 2025</td>
+                            <td>Professional Plan - Monthly Subscription</td>
+                            <td>$299.00</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>Aug 1, 2025</td>
+                            <td>Professional Plan - Monthly Subscription</td>
+                            <td>$299.00</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>Jul 1, 2025</td>
+                            <td>Standard Plan - Monthly Subscription</td>
+                            <td>$99.00</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">Current Plan</h2>
+                <div class="plan-info">
+                    <div class="plan-details">
+                        <span class="plan-label">Plan Name</span>
+                        <span class="plan-value" id="planName"></span>
+                    </div>
+                    <div class="plan-details">
+                        <span class="plan-label">Billing Cycle</span>
+                        <span class="plan-value" id="billingCycle"></span>
+                    </div>
+                    <div class="plan-details">
+                        <span class="plan-label">Amount</span>
+                        <span class="plan-value" id="planAmount"></span>
+                    </div>
+                    <div class="plan-details">
+                        <span class="plan-label">Next Billing</span>
+                        <span class="plan-value" id="nextBilling"></span>
+                    </div>
+                    <div class="plan-details">
+                        <span class="plan-label">Status</span>
+                        <span class="plan-value" id="planStatus"></span>
+                    </div>
+                </div>
+
+                <h2 class="section-title" style="margin-top: 32px;">Payment Method</h2>
+                <div class="payment-method">
+                    <div class="card-icon">💳</div>
+                    <div class="card-details">
+                        <div>VISA ending in 4242</div>
+                        <div class="card-number">Expires 12/26</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-outline" onclick="updatePaymentMethod()">Update Payment Method</button>
+                    <button class="btn btn-primary" onclick="downloadInvoices()">Download Invoices</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const tenantType = urlParams.get('type') || '';
+        const planName = urlParams.get('plan') || '';
+
+        // Determine plan details based on tenant type
+        function getPlanDetails(type, plan) {
+            if (type === 'franchisor') {
+                if (plan.toLowerCase().includes('starter')) {
+                    return { baseAmount: 49.00, cycle: 'Monthly', maxLocations: 5 };
+                } else if (plan.toLowerCase().includes('professional')) {
+                    return { baseAmount: 99.00, cycle: 'Monthly', maxLocations: 25 };
+                } else if (plan.toLowerCase().includes('enterprise')) {
+                    return { baseAmount: 199.00, cycle: 'Monthly', maxLocations: 'Unlimited' };
+                }
+            } else {
+                if (plan.toLowerCase().includes('basic')) {
+                    return { baseAmount: 19.00, cycle: 'Monthly', maxStaff: 5 };
+                } else if (plan.toLowerCase().includes('standard')) {
+                    return { baseAmount: 39.00, cycle: 'Monthly', maxStaff: 15 };
+                } else if (plan.toLowerCase().includes('premium')) {
+                    return { baseAmount: 69.00, cycle: 'Monthly', maxStaff: 50 };
+                }
+            }
+            return { baseAmount: 99.00, cycle: 'Monthly' }; // Default
+        }
+
+        const planDetails = getPlanDetails(tenantType, planName);
+
+        // Mock functions for button actions
+        function updatePaymentMethod() {
+            alert('Payment method update form would open here');
+        }
+
+        function downloadInvoices() {
+            alert('Invoice download would start here');
+        }
+
+        // Use actual plan details from parameters
+        const currentPlan = {
+            name: planName || 'Professional Plan',
+            cycle: planDetails.cycle,
+            amount: planDetails.baseAmount,
+            nextBilling: 'Nov 1, 2025',
+            status: 'Active'
+        };
+
+        const paymentMethod = {
+            type: 'VISA',
+            lastFour: '4242',
+            expiryMonth: 12,
+            expiryYear: 26
+        };
+
+        // Update plan display with current values
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('planName').textContent = currentPlan.name;
+            document.getElementById('billingCycle').textContent = currentPlan.cycle;
+            document.getElementById('planAmount').textContent = `$${currentPlan.amount.toFixed(2)}/${currentPlan.cycle.toLowerCase()}`;
+            document.getElementById('nextBilling').textContent = currentPlan.nextBilling;
+            document.getElementById('planStatus').textContent = currentPlan.status;
+        });
+    </script>
+</body>
+</html>

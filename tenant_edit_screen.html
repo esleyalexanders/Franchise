@@ -985,7 +985,12 @@
         // View billing function
         function viewBilling(e) {
             if (e) e.preventDefault();
-            alert('Billing history would open here.');
+            // Get tenant type and current plan info to pass to billing page
+            const tenantTypeSelect = document.getElementById('tenantType');
+            const type = tenantTypeSelect.value;
+            const plan = tenantData.subscriptionPlan?.name || '';
+            // Pass tenant info as URL parameters
+            window.location.href = `billing_view.html?type=${encodeURIComponent(type)}&plan=${encodeURIComponent(plan)}`;
         }
 
         // Save and update function

@@ -644,9 +644,23 @@
         // Save and create function
         function saveAndCreate() {
             if (validateForm()) {
+                // Get tenant type
+                const tenantType = document.getElementById('tenantType').value;
+                
                 // Collect form data
                 const formData = new FormData(document.getElementById('tenantForm'));
                 const data = Object.fromEntries(formData.entries());
+
+                // Store tenant data in localStorage for later use
+                localStorage.setItem('pendingTenantData', JSON.stringify(data));
+                
+                // Redirect to appropriate subscription plan page based on tenant type
+                if (tenantType === 'franchisor') {
+                    window.location.href = 'Franchisor_subscription_plan.html?from=create&type=franchisor';
+                } else {
+                    window.location.href = 'Single_store_subscription_plan.html?from=create&type=single-store';
+                }
+                return;
                 
                 // Add checkbox values
                 data.termsOfService = document.getElementById('termsOfService').checked;

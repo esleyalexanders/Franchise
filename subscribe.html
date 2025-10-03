@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe - Franchise Management System</title>
+    <link rel="stylesheet" href="subscribe-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="subscribe-container">
+            <!-- Subscription Modal -->
+            <div class="subscribe-modal">
+                <div class="modal-header">
+                    <button class="modal-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1 class="modal-title">Subscribe</h1>
+                    <button class="modal-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="content-wrapper">
+                        <div class="payment-section">
+                        <!-- Payment Methods -->
+                        <div class="payment-methods">
+                            <h2 class="section-title">Choose a payment method</h2>
+
+                            <!-- Credit Card Option -->
+                            <div class="payment-option">
+                                <input type="radio" id="creditCard" name="paymentMethod" class="payment-radio" checked>
+                                <label for="creditCard" class="payment-label">
+                                    <div class="payment-label-content">
+                                        <span class="payment-text">Credit or debit card</span>
+                                        <div class="card-icons">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/visa.svg" alt="Visa" class="card-icon visa">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/mastercard.svg" alt="Mastercard" class="card-icon mastercard">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/americanexpress.svg" alt="American Express" class="card-icon amex">
+                                            <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/discover.svg" alt="Discover" class="card-icon discover">
+                                        </div>
+                                    </div>
+                                </label>
+                                
+                                <!-- Credit Card Form -->
+                                <div class="payment-form" id="creditCardForm">
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <label for="firstName">First name</label>
+                                        <input type="text" id="firstName" class="form-input" placeholder="Minh Tài" value="Minh Tài">
+                                    </div>
+                                    <div class="form-group half">
+                                        <label for="lastName">Last name</label>
+                                        <input type="text" id="lastName" class="form-input" placeholder="Mai Phước" value="Mai Phước">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="cardNumber">Card number</label>
+                                    <div class="card-input-wrapper">
+                                        <input type="text" id="cardNumber" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                                        <i class="fas fa-lock card-lock"></i>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <label for="expiry">MM / YY</label>
+                                        <input type="text" id="expiry" class="form-input" placeholder="MM / YY" maxlength="7">
+                                    </div>
+                                    <div class="form-group half">
+                                        <label for="cvv">CVV</label>
+                                        <div class="cvv-input-wrapper">
+                                            <input type="text" id="cvv" class="form-input" placeholder="123" maxlength="4">
+                                            <i class="fas fa-question-circle cvv-help"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <div class="address-input-wrapper">
+                                        <i class="fas fa-search address-search"></i>
+                                        <input type="text" id="address" class="form-input" placeholder="Search address">
+                                    </div>
+                                    <button class="add-line-btn">Add line</button>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <label for="country">Country/region</label>
+                                        <select id="country" class="form-select">
+                                            <option value="vn">Vietnam</option>
+                                            <option value="us">United States</option>
+                                            <option value="au">Australia</option>
+                                            <option value="uk">United Kingdom</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group half">
+                                        <label for="postal">Postal code</label>
+                                        <input type="text" id="postal" class="form-input" placeholder="12345">
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- Digital Wallet Option -->
+                            <div class="payment-option">
+                                <input type="radio" id="digitalWallet" name="paymentMethod" class="payment-radio">
+                                <label for="digitalWallet" class="payment-label">
+                                    <div class="payment-label-content">
+                                        <span class="payment-text">Digital wallet</span>
+                                        <div class="wallet-icons">
+                                            <img src="https://th.bing.com/th/id/R.abd98b584fef06f0af387e9804542e0d?rik=2IP49GKnfQg2uw&pid=ImgRaw&r=0" alt="Google Pay" class="wallet-icon">
+                                            <img src="https://logos-world.net/wp-content/uploads/2022/03/Apple-Pay-Logo.png" alt="Apple Pay" class="wallet-icon">
+                                        </div>
+                                    </div>
+                                </label>
+                                
+                                <!-- Digital Wallet Buttons -->
+                                <div class="payment-form wallet-buttons" id="digitalWalletForm">
+                                <button class="wallet-btn google-pay-btn">
+                                    <img src="https://th.bing.com/th/id/R.abd98b584fef06f0af387e9804542e0d?rik=2IP49GKnfQg2uw&pid=ImgRaw&r=0" alt="Google Pay" class="wallet-logo">
+                                </button>
+                                <button class="wallet-btn apple-pay-btn">
+                                    <img src="https://logos-world.net/wp-content/uploads/2022/03/Apple-Pay-Logo.png" alt="Apple Pay" class="wallet-logo">
+                                </button>
+                                </div>
+                            </div>
+
+                            <!-- PayPal Option -->
+                            <div class="payment-option">
+                                <input type="radio" id="paypal" name="paymentMethod" class="payment-radio">
+                                <label for="paypal" class="payment-label">
+                                    <div class="payment-label-content">
+                                        <span class="payment-text">PayPal</span>
+                                        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" class="paypal-logo">
+                                    </div>
+                                </label>
+                                
+                                <!-- PayPal Button -->
+                                <div class="payment-form" id="paypalForm">
+                                <p class="paypal-description">
+                                    Connect your PayPal account and use it to pay your bills. You'll be redirected to PayPal to add your billing information.
+                                </p>
+                                <button class="paypal-btn">
+                                    <span>Pay with</span>
+                                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" class="paypal-logo-btn">
+                                </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Powered by Stripe & PayPal -->
+                        <div class="powered-by">
+                            <span>Provided by</span>
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" class="stripe-logo">
+                            <span class="provider-separator">&</span>
+                            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" class="paypal-logo-provider">
+                        </div>
+                        </div>
+
+                        <!-- Plan Summary Sidebar -->
+                        <div class="plan-summary">
+                            <div class="plan-header">
+                                <div class="plan-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="plan-details" id="planDetailsSection">
+                                    <div class="plan-row">
+                                        <h3 class="plan-name">Basic Plan</h3>
+                                        <p class="plan-price">$19</p>
+                                    </div>
+                                    <div class="plan-row">
+                                        <p class="plan-billing">monthly</p>
+                                        <p class="plan-total">$1 × 3 months</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="plan-schedule">
+                                <div class="schedule-item">
+                                    <i class="fas fa-circle schedule-dot"></i>
+                                    <div class="schedule-info">
+                                        <span class="schedule-label">Today</span>
+                                        <span class="schedule-amount">$1.00</span>
+                                    </div>
+                                </div>
+                                <div class="schedule-desc">$1 × 3 months</div>
+                                
+                                <div class="schedule-item">
+                                    <i class="far fa-circle schedule-dot"></i>
+                                    <div class="schedule-info">
+                                        <span class="schedule-label">Jan 1, 2026</span>
+                                        <span class="schedule-amount">$25.00/mo</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="discount-section">
+                                <button class="discount-btn">
+                                    <i class="fas fa-tag"></i>
+                                    <span>$20 USD Domain discount</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+
+                            <div class="amount-due">
+                                <div class="amount-header">
+                                    <span class="amount-label">Amount due</span>
+                                    <span class="amount-value">$1.00 USD</span>
+                                </div>
+                                <div class="amount-footer">
+                                    <span class="amount-info">Today</span>
+                                    <span class="tax-info">plus applicable taxes</span>
+                                </div>
+                            </div>
+
+                            <button class="subscribe-btn" disabled>Subscribe</button>
+
+                            <p class="cancel-info">You need to select a payment method before you can start this plan.</p>
+                            <p class="cancel-info">Change or cancel your plan anytime</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get plan details from localStorage
+            const planDetails = JSON.parse(localStorage.getItem('selectedPlanDetails') || '{}');
+            const urlParams = new URLSearchParams(window.location.search);
+            const planType = urlParams.get('type') || '';
+            
+            // Update plan details in UI
+            if (planDetails) {
+                document.querySelector('.plan-name').textContent = planDetails.name || 'Basic Plan';
+                document.querySelector('.plan-price').textContent = planDetails.price || '$0.00';
+                document.querySelector('.plan-billing').textContent = planDetails.period?.replace('per ', '') || 'Monthly';
+                
+                // Update amount due
+                const priceValue = parseFloat(planDetails.price?.replace('$', '') || '0');
+                document.querySelector('.amount-value').textContent = `$${priceValue.toFixed(2)} USD`;
+            }
+
+            // Back button functionality
+            document.querySelector('.modal-back').addEventListener('click', function() {
+                if (planType === 'franchisor') {
+                    window.location.href = 'Franchisor_subscription_plan.html';
+                } else {
+                    window.location.href = 'Single_store_subscription_plan.html';
+                }
+            });
+
+            // Close button functionality
+            document.querySelector('.modal-close').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+
+            // Enable subscribe button when payment method is selected
+            document.querySelectorAll('.payment-radio').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.querySelector('.subscribe-btn').disabled = false;
+                    document.querySelector('.cancel-info').style.display = 'none';
+                });
+            });
+
+            // Subscribe button functionality
+            document.querySelector('.subscribe-btn').addEventListener('click', function() {
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                if (!selectedPaymentMethod) {
+                    alert('Please select a payment method.');
+                    return;
+                }
+
+                // Here you would handle the subscription process
+                alert('Processing subscription...');
+                // After successful subscription, you would redirect to success page
+                // window.location.href = 'subscription_success.html';
+            });
+        });
+    </script>
+</body>
+</html>
