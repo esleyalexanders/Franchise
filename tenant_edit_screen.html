@@ -479,7 +479,7 @@
                             <span class="plan-status active">Active</span>
                         </div>
                         <div class="plan-details">
-                            <div class="plan-feature">
+                            <div class="plan-feature" id="maxLocationsRow">
                                 <span class="feature-label">Max Franchise Locations:</span>
                                 <span class="feature-value" id="displayMaxLocations">100</span>
                             </div>
@@ -943,6 +943,15 @@
             // Update plan details
             document.getElementById('displayMaxLocations').textContent = plan.maxLocations;
             document.getElementById('displayMaxStaff').textContent = plan.maxStaff;
+
+            // Hide Max Franchise Locations if tenant type is single store
+            const tenantType = document.getElementById('tenantType')?.value;
+            const maxLocationsRow = document.getElementById('maxLocationsRow');
+            if (tenantType === 'single-store' || tenantType === 'single_store' || tenantType === 'single') {
+                if (maxLocationsRow) maxLocationsRow.style.display = 'none';
+            } else {
+                if (maxLocationsRow) maxLocationsRow.style.display = '';
+            }
             
             // Update billing info
             const planDetails = document.querySelector('.plan-details');
@@ -1086,6 +1095,12 @@
 
         // Initialize form on load
         document.addEventListener('DOMContentLoaded', initializeForm);
+
+        // Hide/show Max Franchise Locations on tenant type change (if enabled in future)
+        const tenantTypeSelect = document.getElementById('tenantType');
+        if (tenantTypeSelect) {
+            tenantTypeSelect.addEventListener('change', populateSubscriptionPlan);
+        }
 
         console.log('Tenant edit form loaded');
     </script>

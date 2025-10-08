@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Franchise Management System</title>
+    <style>
+      /* Email-safe styles aligned with existing blue branding */
+      body { margin: 0; padding: 0; background-color: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.7; }
+      .container { width: 100%; background-color: #f5f7fa; padding: 24px 0; }
+      .card { max-width: 640px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 6px 18px rgba(16,24,40,0.08); }
+      .header { background: #007bff; color: #ffffff; padding: 20px 24px; display: flex; align-items: center; gap: 10px; }
+      .logo-icon { width: 30px; height: 30px; background: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+      .logo-text { font-size: 18px; font-weight: 600; color: #ffffff; }
+      .header h1 { margin: 0; font-size: 20px; font-weight: 700; }
+      .content { padding: 28px 28px 24px; }
+      .content h2 { margin: 0 0 6px; font-size: 22px; font-weight: 700; color: #2c3e50; }
+      .content p { margin: 12px 0; font-size: 15px; }
+      .details { background-color: #e7f3ff; border: 1px solid #bbdefb; border-radius: 10px; padding: 18px; margin: 18px 0; }
+      .details h3 { margin: 0 0 12px; font-size: 16px; color: #2c3e50; }
+      .details-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; font-size: 14px; border-bottom: 1px solid #e6eef8; }
+      .details-row:last-child { border-bottom: none; }
+      .details-row strong { color: #2c3e50; min-width: 180px; display: inline-block; }
+      .code { display: inline-block; background: #eef2f7; border: 1px solid #e1e6ed; padding: 2px 8px; border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 13px; color: #111827; }
+      .notice { background: #fff3cd; border: 1px solid #ffe69c; color: #664d03; padding: 14px 16px; border-radius: 10px; display: flex; gap: 10px; align-items: flex-start; margin: 18px 0; }
+      .notice-icon { font-size: 18px; line-height: 1; }
+      .cta { display: inline-block; background-color: #007bff; color: #ffffff !important; text-decoration: none; padding: 12px 22px; border-radius: 8px; font-weight: 700; margin-top: 8px; box-shadow: 0 2px 6px rgba(0,123,255,0.25); font-size: 15px; }
+      .cta:hover { opacity: 0.96; }
+      .footer { text-align: center; color: #6b7280; font-size: 12px; padding: 16px 24px 24px; }
+      .preheader { display: none; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0; overflow: hidden; mso-hide: all; }
+      @media (max-width: 520px) {
+        .content { padding: 22px 18px; }
+        .details-row { flex-direction: column; align-items: flex-start; gap: 4px; }
+        .details-row strong { min-width: 0; }
+        .cta { width: 100%; text-align: center; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Preheader text: shown in inbox preview -->
+    <div class="preheader">Welcome to Franchise Management System — your account for {{tenantName}} is ready.</div>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <div class="logo-icon">◆</div>
+          <div class="logo-text">franchise-web</div>
+        </div>
+        <div class="content">
+          <h2>Welcome to Franchise Management System!</h2>
+          <p>Dear {{Franchise Owner}},</p>
+          <p>
+            Your account has been successfully created.
+            Use the credentials below to sign in and get started:
+          </p>
+
+          <div class="details">
+            <h3>Your Account Details:</h3>
+            <div class="details-row"><strong>Email:</strong> <a href="mailto:{{ownerEmail}}">{{ownerEmail}}</a></div>
+            <div class="details-row"><strong>Temporary Password:</strong> <span class="code">{{temporaryPassword}}</span></div>
+            <div class="details-row"><strong>Tenant Code:</strong> <span class="code">{{tenantCode}}</span></div>
+          </div>
+
+          <p>You can log in to your franchise management dashboard using the link below:</p>
+          <p>
+            <a class="cta" href="{{loginLink}}" target="_blank" rel="noopener">Login to Dashboard</a>
+          </p>
+
+          <p style="color:#000000; font-size:16px; margin-top:8px;">Thank you for choosing us — we’re excited to have you onboard.</p>
+
+          <p>Regards,<br />
+            <strong>Franchise Team</strong>
+          </p>
+        </div>
+        <div class="footer">
+          <div>© 2024 Franchise Management System</div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
+
+

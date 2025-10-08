@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Tenant Activated</title>
+    <style>
+      /* Simple email styles */
+      body { margin: 0; padding: 0; background-color: #f8f9fa; font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+      .container { width: 100%; background-color: #f8f9fa; padding: 20px 0; }
+      .card { max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 4px; overflow: hidden; border: 1px solid #dee2e6; }
+      .header { background: #28a745; color: #ffffff; padding: 16px 20px; }
+      .header h1 { margin: 0; font-size: 18px; font-weight: 600; }
+      .content { padding: 20px; }
+      .content h2 { margin: 0 0 10px; font-size: 16px; font-weight: 600; color: #2c3e50; }
+      .content p { margin: 10px 0; color: #333; }
+      .tenant-info { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 12px; margin: 12px 0; }
+      .tenant-info p { margin: 4px 0; font-size: 14px; }
+      .footer { text-align: center; color: #6c757d; font-size: 11px; padding: 12px 20px; border-top: 1px solid #dee2e6; }
+      .preheader { display: none; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0; overflow: hidden; mso-hide: all; }
+      .tenant-name { font-weight: 600; color: #007bff; }
+      .subdomain { font-weight: 600; color: #2c3e50; font-family: monospace; }
+      .status { color: #28a745; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <!-- Preheader text: shown in inbox preview -->
+    <div class="preheader">New tenant {{tenantName}} has been activated and is ready for use</div>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <h1>New Tenant Activated</h1>
+        </div>
+        <div class="content">
+          <h2>Hi Super Admin,</h2>
+          <p>
+            A new tenant has been successfully activated and is now ready for use.
+          </p>
+
+          <div class="tenant-info">
+            <p><strong>Tenant:</strong> <span class="tenant-name">{{tenantName}}</span></p>
+            <p><strong>Subdomain:</strong> <span class="subdomain">{{subdomain}}.franchise-web.com</span></p>
+            <p><strong>Admin:</strong> {{adminEmail}}</p>
+            <p><strong>Plan:</strong> {{planName}}</p>
+            <p><strong>Status:</strong> <span class="status">Active</span></p>
+            <p><strong>Activated:</strong> {{activationDate}}</p>
+          </div>
+
+          <p>
+            Please review the tenant configuration and ensure everything is set up correctly.
+          </p>
+
+          <p>Regards,<br />
+            <strong>Franchise Team</strong>
+          </p>
+        </div>
+        <div class="footer">
+          <div>© 2024 Franchise Management System</div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>

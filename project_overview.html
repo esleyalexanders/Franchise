@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchise Management System - Project Overview</title>
+    <style>
+        body { font-family: 'Inter', Arial, sans-serif; background: #f8f9fa; color: #222; margin: 0; padding: 0; }
+        .container { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 32px; }
+        h1, h2, h3 { color: #2d3a4a; }
+        ul { margin: 0 0 1.5em 1.5em; }
+        .roles, .features { margin-bottom: 2em; }
+        .role { font-weight: 600; color: #1a73e8; }
+        .feature { margin-bottom: 0.5em; }
+        .summary { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 1em; margin-bottom: 2em; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Franchise Management System - Project Overview</h1>
+        <div class="summary">
+            <p>This project is a Franchise Management System designed to streamline the operations, subscription, and management of franchise businesses. It provides a centralized platform for franchisors, franchisees, single stores, and staff to manage business processes, subscriptions, and communications efficiently.</p>
+        </div>
+
+
+        <h2>User Roles</h2>
+        <div class="roles">
+            <ul>
+                <li><span class="role">Franchisor</span>: The owner or manager of the franchise brand. Manages franchisees, subscription plans, and oversees business operations at a network level. Does not directly operate franchisee stores.</li>
+                <li><span class="role">Franchisee</span>: The operator of an individual franchise unit. Manages their own store, subscribes to plans, and interacts with the franchisor.</li>
+                <li><span class="role">Single Store</span>: An independent store owner who subscribes to the platform without being part of a franchise network. Has both the setup/branding functions of a franchisor and the operational functions of a franchisee (e.g., manage staff, quotes, etc.).</li>
+                <li><span class="role">Staff</span>: Employees who assist in daily operations, either at the franchisor, franchisee, or single store level, with limited access based on permissions.</li>
+            </ul>
+            <div style="background:#fff3cd; border-left:6px solid #ffc107; padding:1em; margin:1.5em 0 0.5em 0; border-radius:6px; font-size:1.05em;">
+                <strong style="color:#b26a00; font-size:1.1em;">Important:</strong><br>
+                <strong>Single Store</strong> and <strong>Franchisor</strong> are both considered tenants in the system, but their functions are different.<br>
+                <ul style="margin:0.5em 0 0 1.2em;">
+                    <li><strong>Single Store</strong> has initial and necessary functions like a franchisor (e.g., setup branding, products, etc.) and also has full operational functions like a franchisee (e.g., manage staff, quotes, daily operations).</li>
+                    <li><strong>Franchisor</strong> manages franchisees at a high level (network, standards, plans) and does not directly operate franchisee stores.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>Main Business Purpose</h2>
+    <p>The main business of this project is to provide a SaaS platform for franchise and single store management, enabling franchisors to offer subscription-based services to franchisees, and allowing single store owners to manage their business independently. The system automates tenant (franchisee and single store) onboarding, subscription billing, payment processing, and authority management, reducing manual work and improving transparency.</p>
+
+        <h2>Main Features</h2>
+        <div class="features">
+            <ul>
+                <li class="feature"><strong>Subscription Management:</strong> Flexible subscription plans for franchisees and single stores, with automated billing and payment tracking.</li>
+                <li class="feature"><strong>Tenant (Franchisee & Single Store) Onboarding:</strong> Guided onboarding flow for new franchisees and single store owners, including account creation, plan selection, and payment setup.</li>
+                <li class="feature"><strong>Role-Based Access Control:</strong> Authority and permission management for franchisors, franchisees, single store owners, and staff.</li>
+                <li class="feature"><strong>Payment Integration:</strong> Support for multiple payment methods (credit card, PayPal, digital wallets) and secure payment processing.</li>
+                <li class="feature"><strong>Business Analytics:</strong> Dashboard and reporting tools for tracking subscription status, revenue, and operational metrics.</li>
+                <li class="feature"><strong>Automated Communication:</strong> Email notifications for onboarding, payment success, and account management.</li>
+                <li class="feature"><strong>Multi-Tenant Support:</strong> Each franchisee and single store operates as a separate tenant with isolated data and management.</li>
+            </ul>
+        </div>
+
+        <p style="color:#888; font-size:0.95em;">For more details, see the project documentation and screen designs included in this workspace.</p>
+        <p style="color:#888; font-size:0.95em;">For more details, see the project documentation and screen designs included in this workspace.</p>
+
+        <!-- Sites Overview moved below for future additions -->
+        <h2>Sites Overview</h2>
+        <div class="features" style="margin-bottom:2em;">
+            <ul>
+                <li class="feature"><strong>Franchise-web:</strong> Platform for Franchise Owners to create new tenants, subscribe to plans, and manage payments. Franchise Owners only manage the franchise in general (e.g., tenant information, tenant admin, tenant plan), not day-to-day operations.</li>
+                <li class="feature"><strong>Tenant-web:</strong> Dedicated subdomain for each tenant after creation. Used by tenant admins, franchisee admins, and staff to operate and control their tenant. Most tenant operations (store management, staff, quotes, etc.) happen here.</li>
+                <li class="feature"><strong>Super Admin-web:</strong> Site for Super Admins to control the system at a high level. Main features include managing other Super Admins and tenants. <span style="color:#b26a00;">Note: Super Admins do not control all users in this MVP.</span></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tenant Admin Invitation</title>
+    <style>
+      /* Email-safe styles matching franchise-web branding */
+      body { margin: 0; padding: 0; background-color: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; }
+      .container { width: 100%; background-color: #f5f7fa; padding: 24px 0; }
+      .card { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 2px 0 4px rgba(0,0,0,0.1); }
+      .header { background: #007bff; color: #ffffff; padding: 20px 24px; display: flex; align-items: center; gap: 10px; }
+      .logo-icon { width: 30px; height: 30px; background: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+      .logo-text { font-size: 18px; font-weight: 600; color: #ffffff; }
+      .header h1 { margin: 0; font-size: 20px; font-weight: 600; color: #2c3e50; }
+      .content { padding: 24px; }
+      .content h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; color: #2c3e50; }
+      .content p { margin: 12px 0; line-height: 1.6; color: #333; }
+      .summary { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin: 16px 0; }
+      .summary table { width: 100%; border-collapse: collapse; }
+      .summary td { padding: 6px 0; font-size: 14px; color: #495057; }
+      .cta { display: inline-block; background-color: #007bff; color: #ffffff !important; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 500; margin: 8px 0 16px; transition: all 0.3s ease; }
+      .cta:hover { background-color: #0056b3; }
+      .small { font-size: 12px; color: #6c757d; }
+      .note { font-size: 12px; color: #6c757d; margin-top: 8px; }
+      .footer { text-align: center; color: #6c757d; font-size: 12px; padding: 16px 24px 24px; border-top: 1px solid #e9ecef; }
+      .preheader { display: none; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0; overflow: hidden; mso-hide: all; }
+      .tenant-name { font-weight: 600; color: #007bff; }
+      .subdomain { font-weight: 600; color: #2c3e50; background-color: #e7f3ff; padding: 4px 8px; border-radius: 4px; font-family: monospace; }
+      .access-info { background-color: #e7f3ff; border: 1px solid #bbdefb; border-radius: 8px; padding: 16px; margin: 16px 0; }
+      .access-info h3 { margin: 0 0 8px; color: #333; font-size: 16px; }
+      .access-info p { margin: 4px 0; color: #333; }
+    </style>
+  </head>
+  <body>
+    <!-- Preheader text: shown in inbox preview -->
+    <div class="preheader">Your tenant {{tenantName}} is now active! Access your admin dashboard at {{subdomain}}.franchise-web.com</div>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <div class="logo-icon">◆</div>
+          <div class="logo-text">franchise-web</div>
+        </div>
+        <div style="padding: 20px 24px; background-color: #ffffff;">
+          <h1>Welcome! Your tenant is now active</h1>
+        </div>
+        <div class="content">
+          <h2>Hi {{recipientName}},</h2>
+          <p>
+            Great news! <strong class="tenant-name">{{tenantName}}</strong> is now active. We've set you up as the administrator, so feel free to dive in and explore. 
+          </p>
+
+          <div class="access-info">
+            <p><strong>Tenant name:</strong> {{tenantName}}</p>
+            <p><strong>Your public website:</strong> <span class="subdomain">{{subdomain}}.franchise-web.com</span></p>
+            <p><strong>Your dashboard:</strong> <span class="subdomain">{{subdomain}}.franchise-web.com/dashboard</span></p>
+            <p><strong>Your role:</strong> Tenant Administrator</p>
+          </div>
+
+          <p>
+            You can now access your tenant dashboard and start managing your franchise operations.
+          </p>
+
+          <p>
+            <a class="cta" href="https://{{subdomain}}.franchise-web.com" target="_blank" rel="noopener">Access Your Dashboard</a>
+          </p>
+
+
+          <p>
+            <strong>What you can do now:</strong>
+          </p>
+          <ul style="margin: 12px 0; padding-left: 20px; color: #333;">
+            <li>Set up your public website</li>
+            <li>Access our advanced features</li>
+            <li>Invite staff members to your tenant</li>
+            <li>Configure your subscription settings</li>
+          </ul>
+
+          <p>
+            Need help getting started? Reply to this email — we're happy to assist.
+          </p>
+
+          <p>Welcome to the Franchise family!<br />
+            <strong>Franchise Team</strong>
+          </p>
+
+          <p class="note">
+            This invitation is for tenant "{{tenantName}}". If you believe you received this email in error, please contact us.
+          </p>
+        </div>
+        <div class="footer">
+          <div>© 2024 Franchise Management System</div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
