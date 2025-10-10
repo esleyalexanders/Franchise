@@ -16,9 +16,12 @@
       .content { padding: 24px; }
       .content h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; color: #2c3e50; }
       .content p { margin: 12px 0; line-height: 1.6; color: #333; }
-      .summary { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin: 16px 0; }
-      .summary table { width: 100%; border-collapse: collapse; }
-      .summary td { padding: 6px 0; font-size: 14px; color: #495057; }
+  /* Match access-info style for visual consistency */
+  .summary { background-color: #e7f3ff; border: 1px solid #bbdefb; border-radius: 8px; padding: 16px; margin: 16px 0; }
+  .summary table { width: 100%; border-collapse: collapse; }
+  .summary td { padding: 6px 0; font-size: 14px; color: #333; }
+  .summary h3 { margin: 0 0 8px; color: #333; font-size: 16px; }
+  .summary small { color: #6c757d; font-size: 12px; }
       .cta { display: inline-block; background-color: #007bff; color: #ffffff !important; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-weight: 500; margin: 8px 0 16px; transition: all 0.3s ease; }
       .cta:hover { background-color: #0056b3; }
       .small { font-size: 12px; color: #6c757d; }
@@ -52,10 +55,30 @@
 
           <div class="access-info">
             <p><strong>Tenant Name:</strong> {{tenantName}}</p>
-            <p><strong>Subdomain:</strong> <span class="subdomain">{{subdomain}}.franchise-web.com</span></p>
+            <p><strong>Public website:</strong> <span class="subdomain">{{subdomain}}.franchise-web.com</span></p>
+            <p><strong>Dashboard:</strong> <span class="subdomain">{{subdomain}}.franchise-web.com/dashboard</span></p>
             <p><strong>Plan:</strong> {{planName}}</p>
             <p><strong>Status:</strong> <span style="color: #28a745; font-weight: bold;">Active</span></p>
             <p><strong>Activated:</strong> {{activationDate}}</p>
+          </div>
+
+          <div class="summary" aria-labelledby="receipt-heading">
+            <h3 id="receipt-heading">Receipt <small>#{{receiptNumber}}</small></h3>
+            <div style="color:#6c757d; font-size:13px; margin-bottom:8px;">{{periodStart}} — {{periodEnd}}</div>
+            <table role="presentation">
+              <tr>
+                <td style="padding:6px 0;">{{planName}}<div style="font-size:12px; color:#6c757d;">Qty 1</div></td>
+                <td style="text-align:right; padding:6px 0;">{{planPrice}}</td>
+              </tr>
+              <tr>
+                <td style="border-top:1px solid #e9ecef; padding-top:10px;">Total</td>
+                <td style="text-align:right; border-top:1px solid #e9ecef; padding-top:10px;">{{total}}</td>
+              </tr>
+              <tr>
+                <td style="padding-top:8px;">Amount paid</td>
+                <td style="text-align:right; padding-top:8px;">{{amountPaid}}</td>
+              </tr>
+            </table>
           </div>
 
           <p>

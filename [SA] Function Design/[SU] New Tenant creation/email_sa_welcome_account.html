@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome — Your Super Admin access is set up</title>
+    <style>
+      /* Styled to match the Super Admin template (green header) and email-safe layout */
+      body { margin: 0; padding: 0; background-color: #f8f9fa; font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+      .container { width: 100%; background-color: #f8f9fa; padding: 20px 0; }
+      .card { max-width: 640px; margin: 0 auto; background-color: #ffffff; border-radius: 6px; overflow: hidden; border: 1px solid #dee2e6; }
+      .header { background: #28a745; color: #ffffff; padding: 18px 20px; display: flex; align-items: center; gap: 10px; }
+      .logo-icon { width: 32px; height: 32px; background: #ffffff22; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+      .logo-text { font-size: 18px; font-weight: 600; color: #ffffff; }
+      .header h1 { margin: 0; font-size: 18px; font-weight: 700; }
+      .content { padding: 22px; }
+      .content h2 { margin: 0 0 6px; font-size: 20px; font-weight: 700; color: #2c3e50; }
+      .content p { margin: 12px 0; font-size: 15px; color: #333; }
+      .details { background-color: #f1fdf3; border: 1px solid #dff4df; border-radius: 6px; padding: 14px; margin: 16px 0; }
+      .details h3 { margin: 0 0 10px; font-size: 16px; color: #2c3e50; }
+      .details-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 14px; border-bottom: 1px solid #eef6ef; }
+      .details-row:last-child { border-bottom: none; }
+      .details-row strong { color: #2c3e50; min-width: 180px; display: inline-block; }
+      .code { display: inline-block; background: #eef2f7; border: 1px solid #e1e6ed; padding: 2px 8px; border-radius: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size: 13px; color: #111827; }
+      .notice { background: #fff3cd; border: 1px solid #ffe69c; color: #664d03; padding: 12px 14px; border-radius: 6px; display: flex; gap: 10px; align-items: flex-start; margin: 14px 0; }
+      .cta { display: inline-block; background-color: #28a745; color: #ffffff !important; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; margin-top: 8px; font-size: 14px; }
+      .footer { text-align: center; color: #6c757d; font-size: 12px; padding: 12px 20px 18px; border-top: 1px solid #eee; }
+      .preheader { display: none; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0; overflow: hidden; mso-hide: all; }
+      @media (max-width: 520px) {
+        .content { padding: 18px; }
+        .details-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+        .details-row strong { min-width: 0; }
+        .cta { width: 100%; text-align: center; }
+      }
+    </style>
+  </head>
+  <body>
+  <div class="preheader">Super Admin account created — credentials to access the Super Admin dashboard.</div>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <h1>Franchise Management System</h1>
+        </div>
+
+        <div class="content">
+          <h2>Hello Super Admin,</h2>
+          <p>
+            Your Super Admin account {{adminUsername}} has been created. Use the credentials below to sign in to the Super Admin dashboard.
+          </p>
+
+          <div class="details">
+            <h3>Account Details</h3>
+            <div class="details-row"><strong>Email:</strong> <a href="mailto:{{adminEmail}}">{{adminEmail}}</a></div>
+            <div class="details-row"><strong>Temporary Password:</strong> <span class="code">{{temporaryPassword}}</span></div>
+          </div>
+
+          <p>
+            You can sign in to the Super Admin dashboard using the link below.
+          </p>
+
+          <p>
+            <a class="cta" href="{{loginLink}}" target="_blank" rel="noopener">Login to Dashboard</a>
+          </p>
+
+          <div class="notice">
+            <div class="notice-icon">⚠️</div>
+            <div>
+              Please change your password after first login. Temporary passwords expire in 24 hours.
+            </div>
+          </div>
+
+          <p>Regards,<br />
+            <strong>Franchise Team</strong>
+          </p>
+        </div>
+
+        <div class="footer">
+          <div>© 2024 Franchise Management System</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

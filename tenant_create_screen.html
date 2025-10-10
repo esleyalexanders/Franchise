@@ -362,17 +362,7 @@
                 <!-- Basic Information Section -->
                 <div class="form-section">
                     <h2 class="section-title">Basic Information</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label" for="tenantType">Tenant Type <span class="required">*</span></label>
-                            <select id="tenantType" name="tenantType" class="form-select" required>
-                                <option value="">Select Tenant Type</option>
-                                <option value="franchisor">Franchisor</option>
-                                <option value="single-store">Single Store</option>
-                            </select>
-                            <div class="error-message" id="tenantTypeError"></div>
-                        </div>
-                    </div>
+                    <!-- tenant type removed: determined later by package selection -->
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="brandName">Brand/Business Name <span class="required">*</span></label>
@@ -651,15 +641,16 @@
                 const formData = new FormData(document.getElementById('tenantForm'));
                 const data = Object.fromEntries(formData.entries());
 
-                // Store tenant data in localStorage for later use
+                // Add checkbox values
+                data.termsOfService = document.getElementById('termsOfService').checked;
+                data.privacyPolicy = document.getElementById('privacyPolicy').checked;
+                data.informationAccurate = document.getElementById('informationAccurate').checked;
+
+                // Store tenant data in localStorage for later use in the package/subscription flow
                 localStorage.setItem('pendingTenantData', JSON.stringify(data));
-                
-                // Redirect to appropriate subscription plan page based on tenant type
-                if (tenantType === 'franchisor') {
-                    window.location.href = 'Franchisor_subscription_plan.html?from=create&type=franchisor';
-                } else {
-                    window.location.href = 'Single_store_subscription_plan.html?from=create&type=single-store';
-                }
+
+                // Redirect to package selector so user selects a plan which determines tenant type
+                window.location.href = 'Select_Package.html?from=create';
                 return;
                 
                 // Add checkbox values
