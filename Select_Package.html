@@ -167,17 +167,29 @@
             document.getElementById('continueBtn').disabled = false;
             // persist selection for next pages
             localStorage.setItem('selectedPackage', JSON.stringify(selected));
+
+            // also store a small details object subscribe.html expects
+            const nameEl = el.querySelector('.plan-name');
+            const priceEl = el.querySelector('.plan-price');
+            const details = {
+                name: nameEl ? nameEl.textContent.trim() : (el.dataset.plan || ''),
+                price: priceEl ? priceEl.textContent.trim() : '',
+                period: priceEl ? (priceEl.querySelector('small') ? priceEl.querySelector('small').textContent.trim() : '') : ''
+            };
+            try { localStorage.setItem('selectedPlanDetails', JSON.stringify(details)); } catch(e){}
         }
 
         function continueToPlan(){
             if(!selected) return alert('Please select a package first.');
             const params = new URLSearchParams({ plan: selected.plan, type: selected.type });
-            // redirect to the appropriate plan page
-            if(selected.type === 'franchisor'){
-                window.location.href = `Franchisor_subscription_plan.html?${params.toString()}`;
-            } else {
-                window.location.href = `Single_store_subscription_plan.html?${params.toString()}`;
-            }
+
+            // preserve from=create if present in current URL or if pendingTenantData exists
+            const urlp = new URLSearchParams(window.location.search);
+            const fromCreate = urlp.get('from') === 'create' || !!localStorage.getItem('pendingTenantData');
+            if(fromCreate) params.set('from','create');
+
+            // redirect to the subscription payment page (subscribe.html) and preserve params
+            window.location.href = `subscribe.html?${params.toString()}`;
         }
 
         // pre-select if user already chose

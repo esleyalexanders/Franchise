@@ -631,53 +631,33 @@
             return true;
         }
 
-        // Save and create function
+        // Save and create function: persist tenant data and redirect to package selector
         function saveAndCreate() {
-            if (validateForm()) {
-                // Get tenant type
-                const tenantType = document.getElementById('tenantType').value;
-                
-                // Collect form data
-                const formData = new FormData(document.getElementById('tenantForm'));
-                const data = Object.fromEntries(formData.entries());
+            if (!validateForm()) return;
 
-                // Add checkbox values
-                data.termsOfService = document.getElementById('termsOfService').checked;
-                data.privacyPolicy = document.getElementById('privacyPolicy').checked;
-                data.informationAccurate = document.getElementById('informationAccurate').checked;
+            // Collect form data
+            const form = document.getElementById('tenantForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
 
-                // Store tenant data in localStorage for later use in the package/subscription flow
-                localStorage.setItem('pendingTenantData', JSON.stringify(data));
-
-                // Redirect to package selector so user selects a plan which determines tenant type
-                window.location.href = 'Select_Package.html?from=create';
-                return;
-                
-                // Add checkbox values
-                data.termsOfService = document.getElementById('termsOfService').checked;
-                data.privacyPolicy = document.getElementById('privacyPolicy').checked;
-                data.informationAccurate = document.getElementById('informationAccurate').checked;
-
-                console.log('Form data:', data);
-                
-                // Simulate API call
-                alert('Tenant created successfully! (This is a demo)');
-
-                // Redirect to plan selection based on Business Type
-                const type = (data.tenantType || '').toLowerCase();
-                if (type === 'franchisor') {
-                    window.location.href = 'franchisor_subscription_plan.html?from=create&type=franchisor&brand=' + encodeURIComponent(data.brandName || '');
-                } else {
-                    window.location.href = 'single_store_subscription_plan.html?from=create&type=single_store&brand=' + encodeURIComponent(data.brandName || '');
-                }
-
-                // In a real application, you would send the data to your backend
-                // fetch('/api/tenants', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify(data)
-                // });
+            // Add checkbox values (if present)
+            try {
+                data.termsOfService = !!document.getElementById('termsOfService') && document.getElementById('termsOfService').checked;
+                data.privacyPolicy = !!document.getElementById('privacyPolicy') && document.getElementById('privacyPolicy').checked;
+                data.informationAccurate = !!document.getElementById('informationAccurate') && document.getElementById('informationAccurate').checked;
+            } catch (e) {
+                // ignore
             }
+
+            // Store tenant data in localStorage for later use in the package/subscription flow
+            try {
+                localStorage.setItem('pendingTenantData', JSON.stringify(data));
+            } catch (e) {
+                console.warn('Could not save pendingTenantData to localStorage', e);
+            }
+
+            // Redirect to package selector so user selects a plan which determines tenant type
+            window.location.href = 'Select_Package.html?from=create';
         }
 
         // Open plan selection by business type
