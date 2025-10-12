@@ -29,6 +29,9 @@
         .plan-features{list-style:none;margin:0;padding:0;margin-top:auto}
         .plan-features li{padding:8px 0;color:#334155;display:flex;align-items:center}
         .plan-features li::before{content:'\2713';display:inline-block;color:var(--success);font-weight:700;width:20px;margin-right:8px}
+        .plan-features .feature-field{display:flex;align-items:center;gap:8px}
+        .plan-features .feature-field label{color:#334155;flex-shrink:0}
+        .plan-features .feature-field input{width:60px;padding:4px 8px;border:1px solid #d1d5db;border-radius:4px;background:#f9fafb;color:#374151;font-size:14px;text-align:center;cursor:not-allowed}
         .plan-footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
     .btn{padding:14px 28px;border-radius:8px;border:none;font-weight:700;cursor:pointer;font-size:16px}
     .btn-outline{background:transparent;color:#6c757d;border:2px solid #6c757d;padding:14px 28px;border-radius:8px}
@@ -61,7 +64,12 @@
                             <div class="plan-name">Starter</div>
                             <div class="plan-price">$49 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>Up to 5 franchisees</li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Franchisees:</label>
+                                        <input type="text" value="5" disabled readonly>
+                                    </div>
+                                </li>
                                 <li>Basic reporting</li>
                                 <li>Email support</li>
                                 <li>Mobile app access</li>
@@ -74,7 +82,12 @@
                             <div class="plan-name">Professional</div>
                             <div class="plan-price">$99 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>Up to 25 franchisees</li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Franchisees:</label>
+                                        <input type="text" value="25" disabled readonly>
+                                    </div>
+                                </li>
                                 <li>Advanced analytics</li>
                                 <li>Priority support</li>
                                 <li>Custom branding</li>
@@ -87,7 +100,12 @@
                             <div class="plan-name">Enterprise</div>
                             <div class="plan-price">$199 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>Unlimited franchisees</li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Franchisees:</label>
+                                        <input type="text" value="Unlimited" disabled readonly>
+                                    </div>
+                                </li>
                                 <li>White-label solution</li>
                                 <li>Dedicated support</li>
                                 <li>Custom development</li>
@@ -110,7 +128,18 @@
                             <div class="plan-name">Basic</div>
                             <div class="plan-price">$19 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>Up to 5 staff members</li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Franchisees:</label>
+                                        <input type="text" value="1" disabled readonly>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Staff:</label>
+                                        <input type="text" value="5" disabled readonly>
+                                    </div>
+                                </li>
                                 <li>Basic reporting dashboard</li>
                                 <li>Email support</li>
                                 <li>Mobile app access</li>
@@ -123,7 +152,18 @@
                             <div class="plan-name">Standard</div>
                             <div class="plan-price">$39 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>Up to 15 staff members</li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Franchisees:</label>
+                                        <input type="text" value="1" disabled readonly>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Staff:</label>
+                                        <input type="text" value="15" disabled readonly>
+                                    </div>
+                                </li>
                                 <li>Advanced analytics</li>
                                 <li>Priority support</li>
                                 <li>Custom branding</li>
@@ -136,7 +176,18 @@
                             <div class="plan-name">Premium</div>
                             <div class="plan-price">$69 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>Up to 50 staff members</li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Franchisees:</label>
+                                        <input type="text" value="1" disabled readonly>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="feature-field">
+                                        <label>Max Staff:</label>
+                                        <input type="text" value="50" disabled readonly>
+                                    </div>
+                                </li>
                                 <li>Advanced analytics</li>
                                 <li>Dedicated support</li>
                                 <li>White-label solution</li>
