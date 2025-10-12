@@ -28,7 +28,9 @@
         .plan-period{color:var(--muted);margin-bottom:12px}
         .plan-features{list-style:none;margin:0;padding:0;margin-top:auto}
         .plan-features li{padding:8px 0;color:#334155;display:flex;align-items:center}
-        .plan-features li::before{content:'\2713';display:inline-block;color:var(--success);font-weight:700;width:20px;margin-right:8px}
+    .plan-features li::before{content:'\2713';display:inline-block;color:var(--success);font-weight:700;width:20px;margin-right:8px}
+    .plan-features li.feature-nocheck::before{content:none;margin:0;width:0}
+    .plan-features li.feature-nocheck{border-bottom:1px solid #e6edf3;padding-bottom:6px;margin-bottom:6px;}
         .plan-features .feature-field{display:flex;align-items:center;gap:8px}
         .plan-features .feature-field label{color:#334155;flex-shrink:0}
         .plan-features .feature-field input{width:60px;padding:4px 8px;border:1px solid #d1d5db;border-radius:4px;background:#f9fafb;color:#374151;font-size:14px;text-align:center;cursor:not-allowed}
@@ -64,13 +66,13 @@
                             <div class="plan-name">Starter</div>
                             <div class="plan-price">$49 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Franchisees:</label>
                                         <input type="text" value="5" disabled readonly>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Staff:</label>
                                         <input type="text" value="20" disabled readonly>
@@ -88,13 +90,13 @@
                             <div class="plan-name">Professional</div>
                             <div class="plan-price">$99 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Franchisees:</label>
                                         <input type="text" value="25" disabled readonly>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Staff:</label>
                                         <input type="text" value="100" disabled readonly>
@@ -112,13 +114,13 @@
                             <div class="plan-name">Enterprise</div>
                             <div class="plan-price">$199 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Franchisees:</label>
                                         <input type="text" value="Unlimited" disabled readonly>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Staff:</label>
                                         <input type="text" value="Unlimited" disabled readonly>
@@ -146,13 +148,13 @@
                             <div class="plan-name">Basic</div>
                             <div class="plan-price">$19 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Franchisees:</label>
                                         <input type="text" value="1" disabled readonly>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Staff:</label>
                                         <input type="text" value="5" disabled readonly>
@@ -170,13 +172,13 @@
                             <div class="plan-name">Standard</div>
                             <div class="plan-price">$39 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Franchisees:</label>
                                         <input type="text" value="1" disabled readonly>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Staff:</label>
                                         <input type="text" value="15" disabled readonly>
@@ -194,13 +196,13 @@
                             <div class="plan-name">Premium</div>
                             <div class="plan-price">$69 <small>/mo</small></div>
                             <ul class="plan-features">
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Franchisees:</label>
                                         <input type="text" value="1" disabled readonly>
                                     </div>
                                 </li>
-                                <li>
+                                <li class="feature-nocheck">
                                     <div class="feature-field">
                                         <label>Max Staff:</label>
                                         <input type="text" value="50" disabled readonly>
