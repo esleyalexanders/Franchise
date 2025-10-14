@@ -245,6 +245,31 @@
             border-color: var(--secondary);
         }
 
+        .btn-outline.coming-soon {
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .btn-outline.coming-soon:hover {
+            background: white;
+            border-color: var(--border);
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .divider {
             text-align: center;
             margin: 30px 0;
@@ -356,7 +381,8 @@
                         Continue with Google
                     </button>
                     
-                    <button type="button" class="btn btn-outline" onclick="loginWithMicrosoft()">
+                    <button type="button" class="btn btn-outline coming-soon" onclick="loginWithMicrosoft()">
+                        <span class="coming-soon-badge">Soon</span>
                         <svg width="20" height="20" viewBox="0 0 24 24">
                             <path fill="#f25022" d="M0 0h11v11H0z"/>
                             <path fill="#00a4ef" d="M13 0h11v11H13z"/>
@@ -474,11 +500,10 @@
         }
 
         function loginWithMicrosoft() {
-            // Implement Microsoft OAuth login
-            console.log('Microsoft login initiated');
-            alert('Microsoft login will be implemented here');
-            // For demo, redirect to home page
-            // window.location.href = 'Franchise_Home.html';
+            // Microsoft OAuth login - Coming Soon
+            console.log('Microsoft login - Coming Soon');
+            alert('🚀 Microsoft login is coming soon! Stay tuned for updates.\n\nFor now, please use Google login or email/password to sign in.');
+            // Future implementation will go here
         }
 
         function forgotPassword() {
