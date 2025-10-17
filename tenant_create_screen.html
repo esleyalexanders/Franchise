@@ -301,6 +301,9 @@
             box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
         }
 
+        /* Utility */
+        .hidden { display: none !important; }
+
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
@@ -459,6 +462,58 @@
                                 <option value="other">Other</option>
                             </select>
                             <div class="error-message" id="countryError"></div>
+                        </div>
+                    </div>
+
+                    <!-- Billing choice -->
+                    <div class="form-row full-width">
+                        <div class="form-group">
+                            <label class="form-label" for="billingSameAsAddress">Billing Address</label>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="billingSameAsAddress" name="billingSameAsAddress" checked>
+                                <label for="billingSameAsAddress" class="checkbox-label">Use the same address for billing</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Address Section (shown only if different) -->
+                <div id="billingAddressSection" class="form-section hidden">
+                    <h2 class="section-title">Billing Address</h2>
+                    <div class="form-row full-width">
+                        <div class="form-group">
+                            <label class="form-label" for="billingStreetAddress">Street Address <span class="required">*</span></label>
+                            <input type="text" id="billingStreetAddress" name="billingStreetAddress" class="form-input" placeholder="Enter billing street address">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="billingCity">City <span class="required">*</span></label>
+                            <input type="text" id="billingCity" name="billingCity" class="form-input" placeholder="Enter billing city">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="billingState">State/Province <span class="required">*</span></label>
+                            <input type="text" id="billingState" name="billingState" class="form-input" placeholder="Enter billing state or province">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="billingPostalCode">Postal Code <span class="required">*</span></label>
+                            <input type="text" id="billingPostalCode" name="billingPostalCode" class="form-input" placeholder="Enter billing postal code">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="billingCountry">Country <span class="required">*</span></label>
+                            <select id="billingCountry" name="billingCountry" class="form-select">
+                                <option value="">Select Country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="AU">Australia</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                                <option value="JP">Japan</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -624,6 +679,13 @@
                     tenantTypeSelect.value = tenantType;
                 }
             }
+
+            // Billing address toggle wiring
+            const billingSameCheckbox = document.getElementById('billingSameAsAddress');
+            if (billingSameCheckbox) {
+                billingSameCheckbox.addEventListener('change', toggleBillingAddress);
+                toggleBillingAddress();
+            }
         });
 
         // Form validation
@@ -645,8 +707,18 @@
                 data.termsOfService = !!document.getElementById('termsOfService') && document.getElementById('termsOfService').checked;
                 data.privacyPolicy = !!document.getElementById('privacyPolicy') && document.getElementById('privacyPolicy').checked;
                 data.informationAccurate = !!document.getElementById('informationAccurate') && document.getElementById('informationAccurate').checked;
+                data.billingSameAsAddress = !!document.getElementById('billingSameAsAddress') && document.getElementById('billingSameAsAddress').checked;
             } catch (e) {
                 // ignore
+            }
+
+            // If billing is same as address, copy values over so downstream always has billing fields
+            if (data.billingSameAsAddress) {
+                data.billingStreetAddress = data.streetAddress || '';
+                data.billingCity = data.city || '';
+                data.billingState = data.state || '';
+                data.billingPostalCode = data.postalCode || '';
+                data.billingCountry = data.country || '';
             }
 
             // Store tenant data in localStorage for later use in the package/subscription flow
@@ -658,6 +730,27 @@
 
             // Redirect to package selector so user selects a plan which determines tenant type
             window.location.href = 'Select_Package.html?from=create';
+        }
+
+        // Toggle Billing Address visibility and required attributes
+        function toggleBillingAddress() {
+            const same = document.getElementById('billingSameAsAddress')?.checked;
+            const section = document.getElementById('billingAddressSection');
+            if (!section) return;
+
+            if (same) {
+                section.classList.add('hidden');
+            } else {
+                section.classList.remove('hidden');
+            }
+
+            // Toggle required attributes on billing fields
+            const required = !same;
+            const fields = ['billingStreetAddress','billingCity','billingState','billingPostalCode','billingCountry'];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.required = required;
+            });
         }
 
         // Open plan selection by business type
