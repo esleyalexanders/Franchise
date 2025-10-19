@@ -71,7 +71,7 @@
             <div class="login-form-container" role="main" aria-labelledby="title">
                 <div class="login-header">
                     <h2 id="title">Two-factor authentication</h2>
-                    <p>Enter the six-digit code from your device or any of your eight-character backup codes to finish logging in.</p>
+                    <p>Enter the six-digit code from your device to finish logging in.</p>
                 </div>
 
                 <form class="login-form" onsubmit="event.preventDefault(); document.getElementById('submitBtn').click();">
@@ -87,10 +87,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" style="display:flex;align-items:center;gap:10px">
-                        <input type="checkbox" id="rememberMe" name="rememberMe" />
-                        <label for="rememberMe">Keep me logged in for 60 days</label>
-                    </div>
+                    <!-- removed remember-me option as requested -->
 
                     <div class="form-group">
                         <button id="submitBtn" class="btn btn-verify" type="button">Verify code and log in</button>
@@ -113,7 +110,6 @@
             const otpContainer = document.getElementById('otpContainer');
             const submitBtn = document.getElementById('submitBtn');
             const message = document.getElementById('message');
-            const rememberMe = document.getElementById('rememberMe');
             const logoutLink = document.getElementById('logoutLink');
 
             function showMessage(text, ok=true){
@@ -148,13 +144,12 @@
             });
 
             submitBtn.addEventListener('click', ()=>{
-                const remember = !!(rememberMe && rememberMe.checked);
                 const code = boxes.map(b=>b.value||'').join('');
                 if(!/^[0-9]{6}$/.test(code)){
                     showMessage('Please enter the complete 6-digit code.', false);
                     return;
                 }
-                showMessage('TOTP verified (demo). Remember me: ' + (remember ? 'Yes':'No'), true);
+                showMessage('TOTP verified (demo).', true);
             });
 
             logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); alert('Logged out (demo)'); });
