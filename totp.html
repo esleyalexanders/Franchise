@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>2FA - TOTP</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #0b69ff;
+            --primary-dark: #0056b3;
+            --secondary: #6c757d;
+            --success: #10b981;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --border: #dee2e6;
+            --muted: #6b7280;
+        }
+
+        body {
+            font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--dark);
+            background: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .login-container { display:flex; min-height:100vh; }
+
+        .login-image { flex:1; background: linear-gradient(135deg, var(--primary), var(--success)); position:relative; display:flex; align-items:center; justify-content:center; }
+        .image-content { text-align:center; color:white; z-index:1; max-width:500px; padding:40px }
+        .image-content h1 { font-size:2.5rem; font-weight:700; margin-bottom:12px }
+        .image-content p { opacity:0.95 }
+
+        .login-form-section { flex:1; display:flex; align-items:center; justify-content:center; padding:40px; background:white }
+        .login-form-container { width:100%; max-width:420px }
+
+        .login-header { text-align:center; margin-bottom:20px }
+        .login-header h2 { font-size:1.6rem; font-weight:700; margin-bottom:6px }
+        .login-header p { color:var(--muted) }
+
+        .form-group { margin-bottom:16px }
+        .form-label { display:block; margin-bottom:6px; font-weight:600; color:var(--dark) }
+        .form-input, .full-input { width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:8px; font-size:16px; background:white }
+        .form-input:focus, .full-input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(11,105,255,0.08) }
+        /* Larger, evenly spaced OTP boxes to match screenshot spacing */
+        .otp-box{width:64px;height:64px;padding:0;border-radius:8px;border:1px solid var(--border);font-size:22px;text-align:center;background:white}
+        .otp-box:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(11,105,255,0.08)}
+
+        .btn { display:inline-block; padding:12px 24px; border:none; border-radius:8px; font-size:16px; font-weight:600; cursor:pointer; width:100%; }
+        .btn-verify { background:var(--primary); color:white }
+
+        .muted-link { color:var(--primary); text-decoration:underline; cursor:pointer }
+
+        @media (max-width:968px){ .login-container{ flex-direction:column } .login-image{ min-height:160px } .image-content h1{ font-size:2rem } }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-image" aria-hidden="true">
+            <div class="image-content">
+                <div style="font-size:5rem;opacity:0.12">◆</div>
+                <h1>Two-factor verification</h1>
+                <p>Secure access to your account — enter the code provided to you to continue.</p>
+            </div>
+        </div>
+
+        <div class="login-form-section">
+            <div class="login-form-container" role="main" aria-labelledby="title">
+                <div class="login-header">
+                    <h2 id="title">Two-factor authentication</h2>
+                    <p>Enter the six-digit code from your device or any of your eight-character backup codes to finish logging in.</p>
+                </div>
+
+                <form class="login-form" onsubmit="event.preventDefault(); document.getElementById('submitBtn').click();">
+                    <div class="form-group">
+                        <label for="codeInput" class="form-label">Code</label>
+                        <div id="otpContainer" style="display:flex;gap:14px;justify-content:center;padding-top:6px">
+                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-box" id="d0" aria-label="Digit 1">
+                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-box" id="d1" aria-label="Digit 2">
+                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-box" id="d2" aria-label="Digit 3">
+                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-box" id="d3" aria-label="Digit 4">
+                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-box" id="d4" aria-label="Digit 5">
+                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" class="otp-box" id="d5" aria-label="Digit 6">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="display:flex;align-items:center;gap:10px">
+                        <input type="checkbox" id="rememberMe" name="rememberMe" />
+                        <label for="rememberMe">Keep me logged in for 60 days</label>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="submitBtn" class="btn btn-verify" type="button">Verify code and log in</button>
+                    </div>
+
+                    <div style="text-align:center;margin-top:6px;color:var(--primary)">
+                        or <a href="#" id="logoutLink" style="color:inherit;text-decoration:underline;">click here to logout.</a>
+                    </div>
+
+                    <div id="message" style="margin-top:12px;display:none;padding:12px;border-radius:8px"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Behaviour: handle six-box OTP input plus optional backup code
+        (function(){
+            const boxes = Array.from({length:6}, (_,i)=>document.getElementById('d'+i));
+            const otpContainer = document.getElementById('otpContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            const message = document.getElementById('message');
+            const rememberMe = document.getElementById('rememberMe');
+            const logoutLink = document.getElementById('logoutLink');
+
+            function showMessage(text, ok=true){
+                message.style.display = 'block';
+                message.textContent = text;
+                message.style.background = ok ? '#d1fae5' : '#fff5f5';
+                message.style.color = ok ? '#065f46' : '#991b1b';
+                message.style.border = ok ? '1px solid #34d399' : '1px solid #fca5a5';
+            }
+
+            // OTP boxes behaviour
+            boxes.forEach((box, idx) => {
+                box.addEventListener('input', () => {
+                    const v = box.value.replace(/[^0-9]/g,'');
+                    box.value = v;
+                    if(v && idx < boxes.length - 1) boxes[idx+1].focus();
+                });
+
+                box.addEventListener('keydown', (e) => {
+                    if(e.key === 'Backspace' && !box.value && idx > 0){ boxes[idx-1].focus(); }
+                    if(e.key === 'ArrowLeft' && idx>0) boxes[idx-1].focus();
+                    if(e.key === 'ArrowRight' && idx<boxes.length-1) boxes[idx+1].focus();
+                });
+
+                box.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+                    for(let i=0;i<6;i++) boxes[i].value = text[i] || '';
+                    const firstEmpty = boxes.find(b => !b.value);
+                    (firstEmpty || boxes[boxes.length-1]).focus();
+                });
+            });
+
+            submitBtn.addEventListener('click', ()=>{
+                const remember = !!(rememberMe && rememberMe.checked);
+                const code = boxes.map(b=>b.value||'').join('');
+                if(!/^[0-9]{6}$/.test(code)){
+                    showMessage('Please enter the complete 6-digit code.', false);
+                    return;
+                }
+                showMessage('TOTP verified (demo). Remember me: ' + (remember ? 'Yes':'No'), true);
+            });
+
+            logoutLink.addEventListener('click', (e)=>{ e.preventDefault(); alert('Logged out (demo)'); });
+
+            window.addEventListener('load', ()=>{ boxes[0].focus(); });
+        })();
+    </script>
+</body>
+</html>
