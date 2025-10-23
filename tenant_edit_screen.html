@@ -902,7 +902,7 @@
                 </div>
 
                 <div class="form-footer">
-                    <button type="button" class="btn btn-danger" onclick="closeTenant()">Close Tenant</button>
+                    <button type="button" class="btn btn-danger" onclick="closeTenant()">Terminate Business</button>
                     <button type="submit" class="btn btn-primary">Save & Update</button>
                 </div>
             </form>
@@ -1167,7 +1167,7 @@
             // });
         }
 
-        // Close tenant function
+        // Terminate business function
         function closeTenant() {
             // Update modal with current tenant name
             const modalTenantName = document.getElementById('modalTenantName');
@@ -1192,7 +1192,7 @@
             }
         }
 
-        // Confirm close tenant function
+        // Confirm terminate business function
         function confirmCloseTenant() {
             // Close the modal first
             closeModal();
@@ -1236,10 +1236,10 @@
             billingInfo[2].textContent = 'Cancelled'; // Monthly Cost
             billingInfo[3].textContent = 'N/A'; // Next Billing Date
 
-            console.log('Tenant closed:', tenantData);
+            console.log('Business terminated:', tenantData);
 
             // Show success message
-            showSuccessMessage('Tenant account has been closed successfully!\n\nStatus: Inactive\nBilling: Cancelled');
+            showSuccessMessage('Business has been terminated successfully!\n\nStatus: Inactive\nBilling: Cancelled');
 
             // In a real application, you would send the closure request to your backend
             // fetch('/api/tenants/{id}/close', {
@@ -1373,42 +1373,42 @@
         console.log('Tenant edit form loaded');
     </script>
 
-    <!-- Close Tenant Confirmation Modal -->
+    <!-- Terminate Business Confirmation Modal -->
     <div id="closeTenantModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-header-icon">⚠️</div>
-                <h2>Close Tenant Account</h2>
+                <h2>Terminate Business</h2>
             </div>
             <div class="modal-body">
                 <div class="modal-warning">
                     <div class="warning-icon">⚠️</div>
                     <p class="warning-text">
-                        <strong>Warning:</strong> This action cannot be undone. The tenant account will be permanently closed.
+                        <strong>Warning:</strong> This action cannot be undone. The business will be permanently terminated.
                     </p>
                 </div>
 
                 <p style="font-size: 15px; margin-bottom: 20px; color: #4b5563;">
-                    You are about to close the tenant account for <strong id="modalTenantName" style="color: #1f2937;">Acme Burgers</strong>. This will have the following impacts:
+                    You are about to terminate the business for <strong id="modalTenantName" style="color: #1f2937;">Acme Burgers</strong>. This will have the following impacts:
                 </p>
 
                 <div class="impact-list">
                     <h4>Immediate Effects:</h4>
                     <ul>
-                        <li>Tenant status will be set to <strong>"Inactive"</strong></li>
+                        <li>Business status will be set to <strong>"Inactive"</strong></li>
                         <li>All active subscriptions and billing will be <strong>cancelled</strong></li>
-                        <li>Access to the tenant system will be <strong>disabled</strong></li>
+                        <li>Access to the business account will be <strong>disabled</strong></li>
                         <li>All franchise locations will be <strong>deactivated</strong></li>
                     </ul>
                 </div>
 
                 <p style="color: #dc2626; font-weight: 600; font-size: 15px; margin-top: 20px; text-align: center; padding: 16px; background: #fef2f2; border-radius: 8px; border: 1px solid #fecaca;">
-                    Are you sure you want to proceed with closing this tenant account?
+                    Are you sure you want to proceed with terminating this business?
                 </p>
             </div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-danger" onclick="confirmCloseTenant()">Close Tenant</button>
+                <button class="btn btn-danger" onclick="confirmCloseTenant()">Terminate business</button>
             </div>
         </div>
     </div>
