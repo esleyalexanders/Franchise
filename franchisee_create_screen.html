@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Create Franchisee — Prototype</title>
+    <link rel="stylesheet" href="franchisee_styles.css">
+</head>
+<body data-base-domain="acme.datax.com">
+    <aside class="sidebar">
+        <div class="sidebar-brand">Franchise</div>
+        <nav class="sidebar-nav">
+            <a href="Franchisor_Home_New.html" class="menu-item">Home</a>
+            <a href="#" class="menu-item">Logout</a>
+        </nav>
+    </aside>
+
+    <div class="container">
+        <header class="header">
+            <h1>Create Franchisee</h1>
+        </header>
+
+        <section class="card">
+            <form id="createForm">
+                <div class="form-row">
+                    <label>Franchisee Name <span class="required">*</span>
+                        <input id="name" name="name" required />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Branch / Unit Code (used for path, lowercase) <span class="required">*</span></label>
+                    <div class="input-prefix">
+                        <span class="prefix" id="urlPrefix">acme.datax.com/</span>
+                        <input id="unitCode" name="unitCode" pattern="[a-z0-9-]{2,30}" placeholder="e.g. hanoi" required />
+                    </div>
+                    <div class="muted-sm" style="margin-top:6px;">Preview: <span id="tenantUrlPreviewText"></span></div>
+                </div>
+                <div class="form-row">
+                    <label>Franchisee Owner Name
+                        <input id="contactName" name="contactName" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Franchisee Owner Email <span class="required">*</span>
+                        <input id="contactEmail" name="contactEmail" type="email" required />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Street Address
+                        <input id="street" name="street" placeholder="123 Main St" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>City
+                        <input id="city" name="city" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>State / Province
+                        <input id="state" name="state" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Postal Code
+                        <input id="postalCode" name="postalCode" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Country
+                        <input id="country" name="country" placeholder="e.g. US, VN" />
+                    </label>
+                </div>
+                <!-- Status is assigned by the system on create (Invited). -->
+                <input type="hidden" id="status" name="status" value="invited" />
+                <div class="form-row">
+                    <label>Phone Number
+                        <input id="phone" name="phone" type="tel" placeholder="e.g. +84 912 345 678" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Notes
+                        <textarea id="notes" name="notes"></textarea>
+                    </label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelBtn" class="btn">Cancel</button>
+                    <button type="submit" class="btn primary">Create Franchisee & Invite</button>
+                </div>
+                <div id="createError" class="form-error hidden"></div>
+            </form>
+        </section>
+    </div>
+
+    <script src="franchisee_create.js"></script>
+</body>
+</html>

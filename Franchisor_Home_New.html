@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franchisor Home — Franchisee Management (Prototype)</title>
+    <style>
+        /* Base typography and resets (matched to Tenant management style) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.6; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: white;
+            border-right: 1px solid #e9ecef;
+            padding: 20px 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+        .sidebar-brand { font-weight: 700; color: #2c3e50; font-size: 18px; margin-bottom: 8px; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+        .menu-item { text-decoration: none; color: #6c757d; padding: 8px 10px; border-radius: 6px; display: block; }
+        .menu-item.active { background: #e9efff; color: #0a58ca; font-weight: 600; }
+
+          /* Page container aligns with Tenant style but reserves space for sidebar.
+              Use calc so the container fits without creating horizontal scroll. */
+          .container { max-width: calc(100% - 300px); margin-left: 260px; padding: 20px; }
+
+        /* Header (matches Tenant header rules) */
+        .header { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: #2c3e50; font-size: 22px; }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        input#searchInput { padding: 10px 12px; border-radius: 6px; border: 2px solid #e9ecef; min-width: 320px; }
+
+        /* Buttons (primary/outline) */
+        .btn { padding: 10px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .btn.primary, .btn-primary { background: #007bff; color: white; }
+        .btn.primary:hover, .btn-primary:hover { background: #0056b3; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Card / section styles like Tenant screen */
+        .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 20px; }
+        .card h2 { margin-bottom: 12px; color: #2c3e50; }
+        .controls { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
+        label { font-weight: 600; color: #495057; }
+        select { padding: 8px 10px; border-radius: 6px; border: 2px solid #e9ecef; }
+
+        /* List rows */
+        .list-container { display: flex; flex-direction: column; gap: 10px; }
+        .row { display: grid; grid-template-columns: 2fr 1fr 2fr 1fr 1fr 160px; gap: 12px; align-items: center; padding: 12px; border: 1px solid #eef2f6; border-radius: 8px; background: white; }
+        .row .name { font-weight: 600; color: #2c3e50; }
+        .row .unit { color: #6c757d; font-size: 14px; }
+        .row .contact, .row .city { color: #495057; }
+        .row .status { display:inline-block; padding:6px 10px; border-radius:999px; font-size:13px; font-weight:600; }
+    .status.active { background: #d4edda; color: #155724; }
+    .status.invited { background: #e6f0ff; color: #0a58ca; }
+    .status.pending { background: #fff3cd; color: #856404; }
+    .status.inactive { background: #e2e3e5; color: #383d41; }
+
+        .actions { display:flex; gap:8px; justify-content:flex-end; }
+        .action-link { background: transparent; border: 1px solid #e9ecef; padding: 8px 10px; border-radius:6px; color:#6c757d; cursor:pointer; }
+
+        .footer { text-align: center; color: #6c757d; margin-top: 8px; }
+
+    /* Small icon buttons used in actions column */
+    .btn.small { padding: 6px; height: 36px; min-width: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #e9ecef; background: white; color: #495057; cursor: pointer; }
+    .btn.small:hover { background: #f8f9fb; }
+    .btn.small.outline { background: transparent; }
+    .btn.small svg { width: 16px; height: 16px; display: block; }
+
+    /* Deactivate (danger) action - red highlight */
+    .btn.small.danger, .action-deactivate { border-color: #dc3545; color: #c82333; background: #fff5f5; }
+    .btn.small.danger:hover, .action-deactivate:hover { background: #ffe6e6; }
+
+    /* Provide a compact header style so header row doesn't look like a data row */
+    .row.header { background: transparent; border: none; padding: 6px 12px; font-weight: 700; color: #495057; }
+    .row.header .col { padding: 6px 8px; }
+
+        /* Modal overlay & helpers (missing previously) */
+    .hidden { display: none !important; }
+    /* modal is visible when not .hidden - keep layout stable by using flex by default */
+    .modal { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 8px; padding: 18px; width: 90%; max-width: 700px; box-shadow: 0 6px 24px rgba(0,0,0,0.12); }
+        .modal-content h3 { margin-bottom: 8px; }
+        .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+
+        @media (max-width: 900px) {
+            .container { margin-left: 0; padding: 12px; }
+            .sidebar { position: relative; width: 100%; flex-direction: row; gap:8px; padding: 12px; }
+            .list-container .row { grid-template-columns: 1fr; gap:8px; }
+            input#searchInput { min-width: 160px; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">Franchise</div>
+        <nav class="sidebar-nav">
+            <a href="Franchisor_Home_New.html" class="menu-item active">Home</a>
+            <a href="#" class="menu-item">Logout</a>
+        </nav>
+    </aside>
+
+    <div class="container">
+        <header class="header">
+            <h1>Franchisor Dashboard</h1>
+            <div class="header-actions">
+                <a id="createBtn" class="btn primary" href="franchisee_create_screen.html">Create Franchisee</a>
+                <input id="searchInput" placeholder="Search by name, branch code, city..." />
+            </div>
+        </header>
+
+        <section class="card">
+            <h2>My Franchisees</h2>
+            <div class="controls">
+                <label>Filter:
+                    <select id="statusFilter">
+                        <option value="all">All</option>
+                        	<option value="invited">Invited</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </label>
+            </div>
+
+            <div id="listContainer" class="list-container">
+                <!-- Franchisee rows will render here -->
+            </div>
+        </section>
+
+        <footer class="footer">Prototype: franchisee management (local mock)</footer>
+    </div>
+
+    <!-- Create / Edit Modal -->
+    <div id="franchiseeModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modalTitle">Create Franchisee</h3>
+            <form id="franchiseeForm">
+                <div class="form-row">
+                    <label>Franchisee Name <span class="required">*</span>
+                        <input id="f_name" name="name" required />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Branch / Unit Code (used for path) <span class="required">*</span>
+                        <input id="f_unitCode" name="unitCode" pattern="[a-z0-9-]{2,30}" placeholder="e.g. hanoi" required />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Franchisee Owner Name
+                        <input id="f_contactName" name="contactName" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Franchisee Owner Email <span class="required">*</span>
+                        <input id="f_contactEmail" name="contactEmail" type="email" required />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>City
+                        <input id="f_city" name="city" />
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Status
+                        <select id="f_status" name="status">
+                            <option value="pending">Pending</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>Notes
+                        <textarea id="f_notes" name="notes"></textarea>
+                    </label>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelModal" class="btn">Cancel</button>
+                    <button type="submit" id="saveFranchisee" class="btn primary">Save & Invite</button>
+                </div>
+                <div id="formError" class="form-error hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <template id="rowTemplate">
+        <div class="row">
+            <div class="col name"></div>
+            <div class="col unit"></div>
+                <div class="col owner"></div>
+            <div class="col city"></div>
+            <div class="col status"></div>
+            <div class="col actions"></div>
+        </div>
+    </template>
+
+    <script src="franchisee_management.js"></script>
+</body>
+</html>
