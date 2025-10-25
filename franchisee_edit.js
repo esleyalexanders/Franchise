@@ -111,4 +111,65 @@
     });
 
     cancelBtn.addEventListener('click', function(){ window.location.href = 'Franchisor_Home_New.html'; });
+
+    // ----- Resend Invite and Deactivate handlers -----
+    const resendBtn = document.getElementById('resendBtn');
+    const deactivateBtn = document.getElementById('deactivateBtn');
+    const deactivateModal = document.getElementById('deactivateModal');
+    const deactivateCancelBtn = document.getElementById('deactivateCancelBtn');
+    const deactivateConfirmBtn = document.getElementById('deactivateConfirmBtn');
+
+    if (resendBtn) {
+        resendBtn.addEventListener('click', function(){
+            try {
+                const items = load();
+                const idx = items.findIndex(i => i.id === id);
+                if (idx === -1) return alert('Franchisee not found');
+                items[idx].invitedAt = new Date().toISOString();
+                // keep status as invited when resending
+                items[idx].status = items[idx].status || 'invited';
+                save(items);
+                alert('Invite resent (prototype).');
+            } catch (e) {
+                console.error(e);
+                alert('Unable to resend invite.');
+            }
+        });
+    }
+
+    if (deactivateBtn && deactivateModal) {
+        deactivateBtn.addEventListener('click', function(){
+            deactivateModal.classList.remove('hidden');
+            deactivateModal.setAttribute('aria-hidden','false');
+        });
+    }
+    if (deactivateCancelBtn && deactivateModal) {
+        deactivateCancelBtn.addEventListener('click', function(){
+            deactivateModal.classList.add('hidden');
+            deactivateModal.setAttribute('aria-hidden','true');
+        });
+    }
+    if (deactivateConfirmBtn) {
+        deactivateConfirmBtn.addEventListener('click', function(){
+            try {
+                const items = load();
+                const idx = items.findIndex(i => i.id === id);
+                if (idx === -1) return alert('Franchisee not found');
+                items[idx].status = 'deactivated';
+                items[idx].deactivatedAt = new Date().toISOString();
+                items[idx].updatedAt = new Date().toISOString();
+                save(items);
+                if (deactivateModal) {
+                    deactivateModal.classList.add('hidden');
+                    deactivateModal.setAttribute('aria-hidden','true');
+                }
+                alert('Franchisee deactivated.');
+                // Redirect back to home/dashboard
+                window.location.href = 'Franchisor_Home_New.html';
+            } catch (e) {
+                console.error(e);
+                alert('Unable to deactivate franchisee.');
+            }
+        });
+    }
 })();

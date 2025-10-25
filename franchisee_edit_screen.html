@@ -84,10 +84,26 @@
                 <div class="modal-actions">
                     <button type="button" id="cancelBtn" class="btn">Cancel</button>
                     <button type="submit" class="btn primary">Save Changes</button>
+                    <!-- Inline action buttons: Resend Invite & Deactivate -->
+                    <button type="button" id="resendBtn" class="btn small outline">Resend Invite</button>
+                    <button type="button" id="deactivateBtn" class="btn small danger">Deactivate</button>
                 </div>
                 <div id="editError" class="form-error hidden"></div>
             </form>
         </section>
+        <!-- duplicate action buttons removed; actions are inline with Save/Cancel -->
+    </div>
+
+    <!-- Deactivate confirmation modal -->
+    <div id="deactivateModal" class="modal hidden" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="deactivateTitle">
+            <h3 id="deactivateTitle">Confirm deactivation</h3>
+            <p>This will deactivate / terminate this franchisee. They will lose access and the tenant will be marked as deactivated. This action can be reversed only by the system admin. Are you sure you want to continue?</p>
+            <div class="modal-actions">
+                <button id="deactivateCancelBtn" class="btn">Cancel</button>
+                <button id="deactivateConfirmBtn" class="btn danger">Yes, Deactivate</button>
+            </div>
+        </div>
     </div>
 
     <script src="franchisee_edit.js"></script>
