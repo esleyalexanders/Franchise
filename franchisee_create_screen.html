@@ -29,14 +29,14 @@
                 <h2 class="form-section-title">Franchisee Information</h2>
                 <div class="form-row">
                     <label for="name">
-                        Business Name <span class="required">*</span>
+                        Name <span class="required">*</span>
                     </label>
                     <input id="name" name="name" required aria-describedby="name-hint" aria-invalid="false" />
                     <small id="name-hint" class="help-text">The legal name of the franchisee business</small>
                 </div>
                 <div class="form-row">
                     <label for="countryCode">
-                        Country Code <span class="required">*</span>
+                        Country <span class="required">*</span>
                     </label>
                     <select id="countryCode" name="countryCode" required aria-describedby="countryCode-hint" aria-invalid="false">
                         <option value="au" selected>Australia (au)</option>
@@ -68,7 +68,7 @@
                 </div>
                 <div class="form-row">
                     <label for="franchiseeAddress">
-                        Business Address <span class="required">*</span>
+                        Address <span class="required">*</span>
                     </label>
                     <div class="address-input-wrapper">
                         <input id="franchiseeAddress" name="franchiseeAddress" placeholder="Start typing an address..." required 
@@ -81,7 +81,7 @@
                 <input type="hidden" id="status" name="status" value="invited" />
                 <div class="form-row">
                     <label for="phone">
-                        Business Phone Number <span class="required">*</span>
+                        Phone Number <span class="required">*</span>
                     </label>
                     <input id="phone" name="phone" type="tel" placeholder="e.g. +84 912 345 678" required 
                            autocomplete="tel" aria-describedby="phone-hint" aria-invalid="false" />
@@ -98,7 +98,7 @@
                 <h2 class="form-section-title">Contract Dates</h2>
                 <div class="form-row">
                     <label for="contractStartDate">
-                        Contract Start Date
+                        Start Date
                     </label>
                     <input id="contractStartDate" name="contractStartDate" type="date" 
                            min="2024-01-01" aria-describedby="contractStart-hint" />
@@ -106,25 +106,25 @@
                 </div>
                 <div class="form-row">
                     <label for="contractEndDate">
-                        Contract End Date
+                        End Date
                     </label>
                     <input id="contractEndDate" name="contractEndDate" type="date" 
                            min="2024-01-01" aria-describedby="contractEnd-hint" />
                     <small id="contractEnd-hint" class="help-text">Contract expiration date (optional)</small>
                 </div>
 
-                <h2 class="form-section-title">Franchisee Owner Info</h2>
+                <h2 class="form-section-title">Director Info</h2>
                 <div class="form-row">
                     <label for="contactName">
-                        Owner Full Name <span class="required">*</span>
+                        Full Name <span class="required">*</span>
                     </label>
                     <input id="contactName" name="contactName" required autocomplete="name" 
                            aria-describedby="contactName-hint" aria-invalid="false" />
-                    <small id="contactName-hint" class="help-text">Full legal name of the franchisee owner</small>
+                    <small id="contactName-hint" class="help-text">Full legal name of the director</small>
                 </div>
                 <div class="form-row">
                     <label for="contactEmail">
-                        Owner Email Address <span class="required">*</span>
+                        Email <span class="required">*</span>
                     </label>
                     <input id="contactEmail" name="contactEmail" type="email" required autocomplete="email" 
                            aria-describedby="contactEmail-hint" aria-invalid="false" />
@@ -132,11 +132,11 @@
                 </div>
                 <div class="form-row">
                     <label for="ownerPhone">
-                        Owner Phone Number
+                        Phone Number
                     </label>
                     <input id="ownerPhone" name="ownerPhone" type="tel" placeholder="e.g. +84 912 345 678" 
                            autocomplete="tel" aria-describedby="ownerPhone-hint" />
-                    <small id="ownerPhone-hint" class="help-text">Personal contact number for the owner (optional)</small>
+                    <small id="ownerPhone-hint" class="help-text">Personal contact number for the director (optional)</small>
                 </div>
                 <div class="form-row">
                     <label for="homeAddress">
@@ -147,7 +147,7 @@
                                autocomplete="home street-address" aria-describedby="homeAddress-hint" />
                         <span class="input-icon" aria-hidden="true">🏠</span>
                     </div>
-                    <small id="homeAddress-hint" class="help-text">Owner's residential address (optional)</small>
+                    <small id="homeAddress-hint" class="help-text">Director's residential address (optional)</small>
                 </div>
                 <div class="form-row">
                     <label for="postalAddress">
@@ -164,7 +164,7 @@
                 <h2 class="form-section-title">Secondary Contact</h2>
                 <div class="form-row">
                     <label for="secondaryContactName">
-                        Secondary Contact Name
+                        Name
                     </label>
                     <input id="secondaryContactName" name="secondaryContactName" autocomplete="name" 
                            aria-describedby="secondaryContactName-hint" />
@@ -172,7 +172,7 @@
                 </div>
                 <div class="form-row">
                     <label for="relationshipToOwner">
-                        Relationship to Owner <span id="relationshipRequiredIndicator" class="required hidden">*</span>
+                        Relationship <span id="relationshipRequiredIndicator" class="required hidden">*</span>
                     </label>
                     <select id="relationshipToOwner" name="relationshipToOwner" 
                             aria-describedby="relationshipToOwner-hint">
@@ -187,7 +187,7 @@
                 </div>
                 <div class="form-row">
                     <label for="secondaryContactEmail">
-                        Secondary Contact Email
+                        Email
                     </label>
                     <input id="secondaryContactEmail" name="secondaryContactEmail" type="email" 
                            placeholder="email@example.com" autocomplete="email" 
@@ -196,7 +196,7 @@
                 </div>
                 <div class="form-row">
                     <label for="secondaryContactPhone">
-                        Secondary Contact Phone Number
+                        Phone Number
                     </label>
                     <input id="secondaryContactPhone" name="secondaryContactPhone" type="tel" 
                            placeholder="e.g. +84 912 345 678" autocomplete="tel" 

@@ -7,7 +7,7 @@
     <style>
         /* Base typography and resets (matched to Tenant management style) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f6f8fb; color: #111; line-height: 1.6; }
 
         /* Sidebar */
         .sidebar {
@@ -25,78 +25,354 @@
             gap: 12px;
             z-index: 100;
         }
-        .sidebar-brand { font-weight: 700; color: #2c3e50; font-size: 18px; margin-bottom: 8px; }
+        .sidebar-brand { font-weight: 700; color: #2c3e50; font-size: 20px; margin-bottom: 8px; letter-spacing: -0.5px; }
         .sidebar-nav { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-        .menu-item { text-decoration: none; color: #6c757d; padding: 8px 10px; border-radius: 6px; display: block; }
-        .menu-item.active { background: #e9efff; color: #0a58ca; font-weight: 600; }
+        .menu-item { text-decoration: none; color: #6b7280; padding: 10px 12px; border-radius: 8px; display: block; transition: all 0.2s; }
+        .menu-item:hover { background: #f3f4f6; color: #111; }
+        .menu-item.active { background: #eef6ff; color: #0f62fe; font-weight: 600; }
 
-          /* Page container aligns with Tenant style but reserves space for sidebar.
-              Use calc so the container fits without creating horizontal scroll. */
-          .container { max-width: calc(100% - 300px); margin-left: 260px; padding: 20px; }
+        /* Page container */
+        .container { max-width: calc(100% - 300px); margin-left: 260px; padding: 28px 32px; }
 
-        /* Header (matches Tenant header rules) */
-        .header { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { color: #2c3e50; font-size: 22px; }
+        /* Header */
+        .header { background: white; padding: 24px 28px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e6e9ef; }
+        .header h1 { color: #111; font-size: 24px; font-weight: 600; margin: 0; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
-        input#searchInput { padding: 10px 12px; border-radius: 6px; border: 2px solid #e9ecef; min-width: 320px; }
+        /* Enhanced Search Input */
+        .search-wrapper { position: relative; }
+        .search-wrapper::before { content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 16px; pointer-events: none; z-index: 1; }
+        input#searchInput { 
+            padding: 12px 16px 12px 42px; 
+            border-radius: 8px; 
+            border: 2px solid #e6e9ef; 
+            min-width: 360px; 
+            font-size: 14px; 
+            transition: all 0.2s;
+            background: #fafbfc;
+        }
+        input#searchInput:focus { 
+            outline: none; 
+            border-color: #0f62fe; 
+            background: white; 
+            box-shadow: 0 0 0 3px rgba(15,98,254,0.1);
+        }
 
         /* Buttons (primary/outline) */
-        .btn { padding: 10px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
-        .btn.primary, .btn-primary { background: #007bff; color: white; }
-        .btn.primary:hover, .btn-primary:hover { background: #0056b3; }
+        .btn { 
+            padding: 11px 18px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 600; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .btn.primary, .btn-primary { 
+            background: #0f62fe; 
+            color: white;
+            box-shadow: 0 2px 4px rgba(15,98,254,0.2);
+        }
+        .btn.primary:hover, .btn-primary:hover { 
+            background: #0050e6; 
+            box-shadow: 0 4px 8px rgba(15,98,254,0.3);
+            transform: translateY(-1px);
+        }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn.outline { background: white; border: 1px solid #e6e9ef; color: #495057; }
+        .btn.outline:hover { background: #f8f9fa; border-color: #d1d5db; }
 
-        /* Card / section styles like Tenant screen */
-        .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 20px; }
-        .card h2 { margin-bottom: 12px; color: #2c3e50; }
-        .controls { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
-        label { font-weight: 600; color: #495057; }
-        select { padding: 8px 10px; border-radius: 6px; border: 2px solid #e9ecef; }
+        /* Card / section styles */
+        .card { 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
+            padding: 24px 28px; 
+            margin-bottom: 24px; 
+            border: 1px solid #e6e9ef;
+        }
+        .card h2 { 
+            margin-bottom: 20px; 
+            color: #111; 
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #0f62fe;
+            border-radius: 2px;
+        }
+        .controls { 
+            display: flex; 
+            gap: 16px; 
+            align-items: center; 
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e6e9ef;
+        }
+        .controls label { 
+            font-weight: 600; 
+            color: #374151; 
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .controls select { 
+            padding: 10px 14px; 
+            border-radius: 8px; 
+            border: 2px solid #e6e9ef;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        .controls select:focus { 
+            outline: none; 
+            border-color: #0f62fe; 
+            box-shadow: 0 0 0 3px rgba(15,98,254,0.1);
+        }
 
         /* List rows */
-        .list-container { display: flex; flex-direction: column; gap: 10px; }
-        .row { display: grid; grid-template-columns: 2fr 1fr 2fr 1fr 1fr 160px; gap: 12px; align-items: center; padding: 12px; border: 1px solid #eef2f6; border-radius: 8px; background: white; }
-        .row .name { font-weight: 600; color: #2c3e50; }
-        .row .unit { color: #6c757d; font-size: 14px; }
-        .row .contact, .row .city { color: #495057; }
-        .row .status { display:inline-block; padding:6px 10px; border-radius:999px; font-size:13px; font-weight:600; }
-    .status.active { background: #d4edda; color: #155724; }
-    .status.invited { background: #e6f0ff; color: #0a58ca; }
-    .status.pending { background: #fff3cd; color: #856404; }
-    .status.inactive { background: #e2e3e5; color: #383d41; }
+        .list-container { display: flex; flex-direction: column; gap: 12px; }
+        .row { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr 2fr 1fr 1fr 180px; 
+            gap: 16px; 
+            align-items: center; 
+            padding: 16px 20px; 
+            border: 1px solid #e6e9ef; 
+            border-radius: 10px; 
+            background: white;
+            transition: all 0.2s;
+        }
+        .row:hover {
+            border-color: #0f62fe;
+            box-shadow: 0 4px 12px rgba(15,98,254,0.1);
+            transform: translateY(-2px);
+        }
+        .row .col { 
+            padding: 4px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .row .name { font-weight: 600; color: #111; font-size: 15px; }
+        .row .unit { color: #6b7280; font-size: 13px; font-family: 'Courier New', monospace; }
+        .row .owner { color: #374151; font-size: 14px; }
+        .row .city { color: #6b7280; font-size: 14px; }
+        .row .status { 
+            display: inline-block; 
+            padding: 6px 12px; 
+            border-radius: 999px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status.active { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .status.invited { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .status.pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .status.inactive { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
 
-        .actions { display:flex; gap:8px; justify-content:flex-end; }
-        .action-link { background: transparent; border: 1px solid #e9ecef; padding: 8px 10px; border-radius:6px; color:#6c757d; cursor:pointer; }
+        .actions { display: flex; gap: 8px; justify-content: flex-end; }
+        .action-link { 
+            background: white; 
+            border: 1px solid #e6e9ef; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            color: #6b7280; 
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .action-link:hover {
+            background: #f8f9fa;
+            border-color: #d1d5db;
+            color: #111;
+        }
 
-        .footer { text-align: center; color: #6c757d; margin-top: 8px; }
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        .empty-state h3 {
+            font-size: 18px;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
 
-    /* Small icon buttons used in actions column */
-    .btn.small { padding: 6px; height: 36px; min-width: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #e9ecef; background: white; color: #495057; cursor: pointer; }
-    .btn.small:hover { background: #f8f9fb; }
-    .btn.small.outline { background: transparent; }
-    .btn.small svg { width: 16px; height: 16px; display: block; }
+        .footer { 
+            text-align: center; 
+            color: #9ca3af; 
+            margin-top: 32px; 
+            padding: 16px;
+            font-size: 13px;
+        }
 
-    /* Deactivate (danger) action - red highlight */
-    .btn.small.danger, .action-deactivate { border-color: #dc3545; color: #c82333; background: #fff5f5; }
-    .btn.small.danger:hover, .action-deactivate:hover { background: #ffe6e6; }
+        /* Small icon buttons */
+        .btn.small { 
+            padding: 8px; 
+            height: 36px; 
+            min-width: 36px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px; 
+            border: 1px solid #e6e9ef; 
+            background: white; 
+            color: #495057; 
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn.small:hover { 
+            background: #f8f9fb; 
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+        .btn.small.outline { background: transparent; }
+        .btn.small svg { width: 16px; height: 16px; display: block; }
 
-    /* Provide a compact header style so header row doesn't look like a data row */
-    .row.header { background: transparent; border: none; padding: 6px 12px; font-weight: 700; color: #495057; }
-    .row.header .col { padding: 6px 8px; }
+        /* Deactivate (danger) action */
+        .btn.small.danger, .action-deactivate { 
+            border-color: #fca5a5; 
+            color: #dc2626; 
+            background: #fef2f2; 
+        }
+        .btn.small.danger:hover, .action-deactivate:hover { 
+            background: #fee2e2; 
+            border-color: #f87171;
+        }
 
-        /* Modal overlay & helpers (missing previously) */
-    .hidden { display: none !important; }
-    /* modal is visible when not .hidden - keep layout stable by using flex by default */
-    .modal { display: flex; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: white; border-radius: 8px; padding: 18px; width: 90%; max-width: 700px; box-shadow: 0 6px 24px rgba(0,0,0,0.12); }
-        .modal-content h3 { margin-bottom: 8px; }
-        .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+        /* Header row */
+        .row.header { 
+            background: #f8f9fa; 
+            border: 1px solid #e6e9ef;
+            padding: 12px 20px; 
+            font-weight: 700; 
+            color: #374151;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .row.header:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: #e6e9ef;
+        }
+        .row.header .col { padding: 0; }
 
+        /* Modal */
+        .hidden { display: none !important; }
+        .modal { 
+            display: flex; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.5); 
+            z-index: 1000; 
+            align-items: center; 
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content { 
+            background: white; 
+            border-radius: 12px; 
+            padding: 28px; 
+            width: 90%; 
+            max-width: 720px; 
+            box-shadow: 0 20px 48px rgba(0,0,0,0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 { 
+            margin-bottom: 20px; 
+            color: #111;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .form-row {
+            margin-bottom: 18px;
+        }
+        .form-row label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+        .form-row input,
+        .form-row select,
+        .form-row textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid #e6e9ef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .form-row input:focus,
+        .form-row select:focus,
+        .form-row textarea:focus {
+            outline: none;
+            border-color: #0f62fe;
+            box-shadow: 0 0 0 3px rgba(15,98,254,0.1);
+        }
+        .form-row textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .required {
+            color: #dc2626;
+            font-weight: 600;
+            margin-left: 2px;
+        }
+        .form-error {
+            color: #dc2626;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #fef2f2;
+            border-radius: 8px;
+            border-left: 3px solid #dc2626;
+            font-size: 14px;
+        }
+        .modal-actions { 
+            display: flex; 
+            gap: 12px; 
+            justify-content: flex-end; 
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e6e9ef;
+        }
+
+        /* Responsive */
         @media (max-width: 900px) {
-            .container { margin-left: 0; padding: 12px; }
-            .sidebar { position: relative; width: 100%; flex-direction: row; gap:8px; padding: 12px; }
-            .list-container .row { grid-template-columns: 1fr; gap:8px; }
-            input#searchInput { min-width: 160px; }
+            .container { margin-left: 0; padding: 16px; }
+            .sidebar { position: relative; width: 100%; flex-direction: row; gap: 8px; padding: 12px; }
+            .list-container .row { grid-template-columns: 1fr; gap: 12px; }
+            input#searchInput { min-width: 200px; }
+            .header { flex-direction: column; gap: 16px; align-items: stretch; }
+            .header-actions { flex-direction: column; width: 100%; }
+            .search-wrapper { width: 100%; }
+            input#searchInput { width: 100%; min-width: auto; }
         }
     </style>
 </head>
@@ -113,8 +389,10 @@
         <header class="header">
             <h1>Franchisor Dashboard</h1>
             <div class="header-actions">
-                <a id="createBtn" class="btn primary" href="franchisee_create_screen.html">Create Franchisee</a>
-                <input id="searchInput" placeholder="Search by name, branch code, city..." />
+                <a id="createBtn" class="btn primary" href="franchisee_create_screen.html">+ Create Franchisee</a>
+                <div class="search-wrapper">
+                    <input id="searchInput" placeholder="Search by name, branch code, city..." />
+                </div>
             </div>
         </header>
 
@@ -156,12 +434,12 @@
                     </label>
                 </div>
                 <div class="form-row">
-                    <label>Franchisee Owner Name
+                    <label>Director Name
                         <input id="f_contactName" name="contactName" />
                     </label>
                 </div>
                 <div class="form-row">
-                    <label>Franchisee Owner Email <span class="required">*</span>
+                    <label>Director Email <span class="required">*</span>
                         <input id="f_contactEmail" name="contactEmail" type="email" required />
                     </label>
                 </div>
