@@ -22,65 +22,186 @@
 
         <section class="card">
             <form id="createForm">
+                <div class="form-intro">
+                    <strong>Create a new franchisee account.</strong> Fill in the required information below. An invitation email will be sent to the franchisee owner once the account is created.
+                </div>
+                
+                <h2 class="form-section-title">Franchisee Information</h2>
                 <div class="form-row">
-                    <label>Franchisee Name <span class="required">*</span>
-                        <input id="name" name="name" required />
+                    <label for="name">
+                        Business Name <span class="required">*</span>
                     </label>
+                    <input id="name" name="name" required aria-describedby="name-hint" aria-invalid="false" />
+                    <small id="name-hint" class="help-text">The legal name of the franchisee business</small>
                 </div>
                 <div class="form-row">
-                    <label>Branch / Unit Code (used for path, lowercase) <span class="required">*</span></label>
+                    <label for="countryCode">
+                        Country Code <span class="required">*</span>
+                    </label>
+                    <select id="countryCode" name="countryCode" required aria-describedby="countryCode-hint" aria-invalid="false">
+                        <option value="au" selected>Australia (au)</option>
+                        <option value="us">United States (us)</option>
+                        <option value="gb">United Kingdom (gb)</option>
+                        <option value="ca">Canada (ca)</option>
+                        <option value="in">India (in)</option>
+                        <option value="cn">China (cn)</option>
+                        <option value="jp">Japan (jp)</option>
+                        <option value="de">Germany (de)</option>
+                        <option value="fr">France (fr)</option>
+                        <option value="vn">Vietnam (vn)</option>
+                    </select>
+                    <small id="countryCode-hint" class="help-text">Select the country where this franchisee operates</small>
+                </div>
+                <div class="form-row">
+                    <label for="unitCode">
+                        Branch Code <span class="required">*</span>
+                    </label>
                     <div class="input-prefix">
-                        <span class="prefix" id="urlPrefix">acme.datax.com/</span>
-                        <input id="unitCode" name="unitCode" pattern="[a-z0-9-]{2,30}" placeholder="e.g. hanoi" required />
+                        <span class="prefix" id="urlPrefix">acme.datax.com/au/</span>
+                        <input id="unitCode" name="unitCode" pattern="[a-z0-9-]{2,30}" placeholder="e.g. hanoi" required 
+                               aria-describedby="unitCode-hint unitCode-preview" aria-invalid="false" />
                     </div>
-                    <div class="muted-sm" style="margin-top:6px;">Preview: <span id="tenantUrlPreviewText"></span></div>
+                    <small id="unitCode-hint" class="help-text">Unique identifier for this franchisee location (lowercase letters, numbers, or hyphens, 2-30 characters)</small>
+                    <div id="unitCode-preview" class="url-preview">
+                        Preview URL: <strong id="tenantUrlPreviewText">acme.datax.com/au/</strong>
+                    </div>
                 </div>
                 <div class="form-row">
-                    <label>Franchisee Owner Name
-                        <input id="contactName" name="contactName" />
+                    <label for="franchiseeAddress">
+                        Business Address <span class="required">*</span>
                     </label>
-                </div>
-                <div class="form-row">
-                    <label>Franchisee Owner Email <span class="required">*</span>
-                        <input id="contactEmail" name="contactEmail" type="email" required />
-                    </label>
-                </div>
-                <div class="form-row">
-                    <label>Street Address
-                        <input id="street" name="street" placeholder="123 Main St" />
-                    </label>
-                </div>
-                <div class="form-row">
-                    <label>City
-                        <input id="city" name="city" />
-                    </label>
-                </div>
-                <div class="form-row">
-                    <label>State / Province
-                        <input id="state" name="state" />
-                    </label>
-                </div>
-                <div class="form-row">
-                    <label>Postal Code
-                        <input id="postalCode" name="postalCode" />
-                    </label>
-                </div>
-                <div class="form-row">
-                    <label>Country
-                        <input id="country" name="country" placeholder="e.g. US, VN" />
-                    </label>
+                    <div class="address-input-wrapper">
+                        <input id="franchiseeAddress" name="franchiseeAddress" placeholder="Start typing an address..." required 
+                               autocomplete="street-address" aria-describedby="franchiseeAddress-hint" aria-invalid="false" />
+                        <span class="input-icon" aria-hidden="true">📍</span>
+                    </div>
+                    <small id="franchiseeAddress-hint" class="help-text">Physical location of the franchisee business. Start typing and select from address suggestions.</small>
                 </div>
                 <!-- Status is assigned by the system on create (Invited). -->
                 <input type="hidden" id="status" name="status" value="invited" />
                 <div class="form-row">
-                    <label>Phone Number
-                        <input id="phone" name="phone" type="tel" placeholder="e.g. +84 912 345 678" />
+                    <label for="phone">
+                        Business Phone Number <span class="required">*</span>
                     </label>
+                    <input id="phone" name="phone" type="tel" placeholder="e.g. +84 912 345 678" required 
+                           autocomplete="tel" aria-describedby="phone-hint" aria-invalid="false" />
+                    <small id="phone-hint" class="help-text">Primary contact number for the franchisee business</small>
                 </div>
                 <div class="form-row">
-                    <label>Notes
-                        <textarea id="notes" name="notes"></textarea>
+                    <label for="notes">
+                        Notes
                     </label>
+                    <textarea id="notes" name="notes" rows="4" aria-describedby="notes-hint"></textarea>
+                    <small id="notes-hint" class="help-text">Additional information or comments about this franchisee (optional)</small>
+                </div>
+
+                <h2 class="form-section-title">Contract Dates</h2>
+                <div class="form-row">
+                    <label for="contractStartDate">
+                        Contract Start Date
+                    </label>
+                    <input id="contractStartDate" name="contractStartDate" type="date" 
+                           min="2024-01-01" aria-describedby="contractStart-hint" />
+                    <small id="contractStart-hint" class="help-text">Contract effective start date (optional)</small>
+                </div>
+                <div class="form-row">
+                    <label for="contractEndDate">
+                        Contract End Date
+                    </label>
+                    <input id="contractEndDate" name="contractEndDate" type="date" 
+                           min="2024-01-01" aria-describedby="contractEnd-hint" />
+                    <small id="contractEnd-hint" class="help-text">Contract expiration date (optional)</small>
+                </div>
+
+                <h2 class="form-section-title">Franchisee Owner Info</h2>
+                <div class="form-row">
+                    <label for="contactName">
+                        Owner Full Name <span class="required">*</span>
+                    </label>
+                    <input id="contactName" name="contactName" required autocomplete="name" 
+                           aria-describedby="contactName-hint" aria-invalid="false" />
+                    <small id="contactName-hint" class="help-text">Full legal name of the franchisee owner</small>
+                </div>
+                <div class="form-row">
+                    <label for="contactEmail">
+                        Owner Email Address <span class="required">*</span>
+                    </label>
+                    <input id="contactEmail" name="contactEmail" type="email" required autocomplete="email" 
+                           aria-describedby="contactEmail-hint" aria-invalid="false" />
+                    <small id="contactEmail-hint" class="help-text">Email address where the invitation will be sent</small>
+                </div>
+                <div class="form-row">
+                    <label for="ownerPhone">
+                        Owner Phone Number
+                    </label>
+                    <input id="ownerPhone" name="ownerPhone" type="tel" placeholder="e.g. +84 912 345 678" 
+                           autocomplete="tel" aria-describedby="ownerPhone-hint" />
+                    <small id="ownerPhone-hint" class="help-text">Personal contact number for the owner (optional)</small>
+                </div>
+                <div class="form-row">
+                    <label for="homeAddress">
+                        Home Address
+                    </label>
+                    <div class="address-input-wrapper">
+                        <input id="homeAddress" name="homeAddress" placeholder="Start typing an address..." 
+                               autocomplete="home street-address" aria-describedby="homeAddress-hint" />
+                        <span class="input-icon" aria-hidden="true">🏠</span>
+                    </div>
+                    <small id="homeAddress-hint" class="help-text">Owner's residential address (optional)</small>
+                </div>
+                <div class="form-row">
+                    <label for="postalAddress">
+                        Postal Address
+                    </label>
+                    <div class="address-input-wrapper">
+                        <input id="postalAddress" name="postalAddress" placeholder="Start typing an address..." 
+                               autocomplete="shipping street-address" aria-describedby="postalAddress-hint" />
+                        <span class="input-icon" aria-hidden="true">📮</span>
+                    </div>
+                    <small id="postalAddress-hint" class="help-text">Mailing address if different from home address (optional)</small>
+                </div>
+
+                <h2 class="form-section-title">Secondary Contact</h2>
+                <div class="form-row">
+                    <label for="secondaryContactName">
+                        Secondary Contact Name
+                    </label>
+                    <input id="secondaryContactName" name="secondaryContactName" autocomplete="name" 
+                           aria-describedby="secondaryContactName-hint" />
+                    <small id="secondaryContactName-hint" class="help-text">Name of partner, co-owner, or secondary contact (optional)</small>
+                </div>
+                <div class="form-row">
+                    <label for="relationshipToOwner">
+                        Relationship to Owner <span id="relationshipRequiredIndicator" class="required hidden">*</span>
+                    </label>
+                    <select id="relationshipToOwner" name="relationshipToOwner" 
+                            aria-describedby="relationshipToOwner-hint">
+                        <option value="">Select relationship</option>
+                        <option value="spouse">Spouse</option>
+                        <option value="partner">Partner</option>
+                        <option value="co-owner">Co-owner</option>
+                        <option value="business-partner">Business Partner</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <small id="relationshipToOwner-hint" class="help-text">Required when secondary contact name is provided</small>
+                </div>
+                <div class="form-row">
+                    <label for="secondaryContactEmail">
+                        Secondary Contact Email
+                    </label>
+                    <input id="secondaryContactEmail" name="secondaryContactEmail" type="email" 
+                           placeholder="email@example.com" autocomplete="email" 
+                           aria-describedby="secondaryContactEmail-hint" />
+                    <small id="secondaryContactEmail-hint" class="help-text">Email address for the secondary contact (optional)</small>
+                </div>
+                <div class="form-row">
+                    <label for="secondaryContactPhone">
+                        Secondary Contact Phone Number
+                    </label>
+                    <input id="secondaryContactPhone" name="secondaryContactPhone" type="tel" 
+                           placeholder="e.g. +84 912 345 678" autocomplete="tel" 
+                           aria-describedby="secondaryContactPhone-hint" />
+                    <small id="secondaryContactPhone-hint" class="help-text">Phone number for the secondary contact (optional)</small>
                 </div>
 
                 <div class="modal-actions">
